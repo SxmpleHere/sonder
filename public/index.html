@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Physics Football - Multiplayer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #06060a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Press Start 2P', monospace;
+    color: #fff;
+    overflow: hidden;
+    image-rendering: pixelated;
+  }
+
+  /* ========== MENU ========== */
+  #menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    z-index: 10;
+    width: min(92vw, 420px);
+  }
+
+  .panel {
+    background: #0d0d14;
+    border: 4px solid #2a2a3a;
+    box-shadow: 0 0 0 4px #111118, inset 0 0 20px rgba(0,0,0,0.5);
+    padding: 24px 18px;
+    width: 100%;
+  }
+
+  .panel-label {
+    font-size: 8px;
+    color: #5a5a6a;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .field {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .field input {
+    width: 100%;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    padding: 12px 14px;
+    background: #161622;
+    border: 3px solid #2e2e42;
+    color: #e0e0e8;
+    outline: none;
+    border-radius: 0;
+    image-rendering: pixelated;
+    transition: border-color 0.15s;
+  }
+
+  .field input:focus {
+    border-color: #e63946;
+  }
+
+  .field input::placeholder {
+    color: #3a3a4a;
+  }
+
+  .btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    padding: 14px 12px;
+    border: 3px solid;
+    cursor: pointer;
+    border-radius: 0;
+    image-rendering: pixelated;
+    transition: transform 0.08s, filter 0.08s;
+    flex: 1;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .btn:active {
+    transform: translateY(2px);
+  }
+
+  .btn-red {
+    background: #e63946;
+    border-color: #9b1c26;
+    color: #fff;
+    text-shadow: 1px 1px 0 #7a121a;
+    box-shadow: 0 4px 0 #7a121a;
+  }
+  .btn-red:hover { filter: brightness(1.1); }
+  .btn-red:active { box-shadow: 0 1px 0 #7a121a; }
+
+  .btn-green {
+    background: #1a9b5c;
+    border-color: #0d6b3e;
+    color: #fff;
+    text-shadow: 1px 1px 0 #085030;
+    box-shadow: 0 4px 0 #085030;
+  }
+  .btn-green:hover { filter: brightness(1.1); }
+  .btn-green:active { box-shadow: 0 1px 0 #085030; }
+
+  #status {
+    margin-top: 14px;
+    font-size: 8px;
+    color: #5a5a6a;
+    letter-spacing: 1px;
+    min-height: 16px;
+    text-align: center;
+  }
+  #status.error { color: #e63946; }
+  #status.ok { color: #2bff88; }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0 10px;
+    color: #2e2e42;
+    font-size: 8px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: #1e1e2a;
+  }
+
+  .pixel-deco {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin-top: 18px;
+    opacity: 0.35;
+  }
+  .pixel-deco span {
+    width: 8px; height: 8px;
+    background: #2a2a3a;
+  }
+  .pixel-deco span:nth-child(2) { background: #e63946; }
+  .pixel-deco span:nth-child(3) { background: #ffd23f; }
+  .pixel-deco span:nth-child(4) { background: #2bff88; }
+
+  /* ========== GAME ========== */
+  #wrap {
+    position: relative;
+    width: min(98vw, 1000px);
+    aspect-ratio: 16 / 9;
+    border: 4px solid #1f1f2e;
+    box-shadow: 0 0 0 4px #08080c, 0 0 50px rgba(0, 0, 0, 0.9);
+    background: #153317;
+    border-radius: 4px;
+    overflow: hidden;
+    display: none;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  #hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.75), transparent);
+    pointer-events: none;
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  #hud .room {
+    color: #ffd23f;
+    text-shadow: 1px 1px 0 #000;
+  }
+  #hud .players {
+    color: #aaa;
+    text-shadow: 1px 1px 0 #000;
+  }
+  #hud .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  #hud .dot.p1 { background: #e63946; }
+  #hud .dot.p2 { background: #2bff88; }
+</style>
+</head>
+<body>
+
+<!-- ========== MENU ========== -->
+<div id="menu">
+  <div class="panel">
+    <div class="panel-label">YOUR NAME</div>
+    <div class="field">
+      <input id="nameInput" type="text" placeholder="PLAYER" maxlength="12" value="PLAYER" autocomplete="off" spellcheck="false">
+    </div>
+
+    <button class="btn btn-red" id="createBtn" style="width:100%; margin-bottom:4px;">CREATE ROOM</button>
+
+    <div class="divider">OR JOIN</div>
+
+    <div class="panel-label">ROOM CODE</div>
+    <div class="field">
+      <input id="codeInput" type="text" placeholder="XXXXX" maxlength="5" autocomplete="off" spellcheck="false" style="text-transform:uppercase; letter-spacing:3px; text-align:center;">
+    </div>
+
+    <button class="btn btn-green" id="joinBtn" style="width:100%;">JOIN ROOM</button>
+  </div>
+
+  <div id="status"></div>
+
+  <div class="pixel-deco">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- ========== GAME ========== -->
+<div id="wrap">
+  <div id="hud">
+    <div class="room" id="hudRoom">ROOM: ----</div>
+    <div class="players" id="hudPlayers">
+      <span class="dot p1"></span>P1
+      &nbsp;&nbsp;
+      <span class="dot p2"></span>P2
+    </div>
+  </div>
+  <canvas id="game" width="320" height="180"></canvas>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const cv = document.getElementById('game');
+const ctx = cv.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+const W = 320, H = 180, WALL = 10;
+const GOAL_Y = H / 2 - 24, GOAL_H = 48, GOAL_DEPTH = 18;
+
+let socket, myId, roomCode;
+let me = null;
+let opponent = null;
+let ball = { x: 160, y: 90, vx: 0, vy: 0, r: 4.5 };
+let particles = [];
+let walls, goals, posts;
+let won = false, winTimer = 0, goalSpeedKph = 0;
+let keys = {};
+
+const PhysicsEngine = {
+  clampCircleRect(c, r) {
+    const closestX = Math.max(r.x, Math.min(c.x, r.x + r.w));
+    const closestY = Math.max(r.y, Math.min(c.y, r.y + r.h));
+    let dx = c.x - closestX;
+    let dy = c.y - closestY;
+    let dist2 = dx * dx + dy * dy;
+    if (dist2 < c.r * c.r) {
+      let dist = Math.sqrt(dist2);
+      let nx, ny, penetration;
+      if (dist === 0) {
+        const left = c.x - r.x;
+        const right = (r.x + r.w) - c.x;
+        const top = c.y - r.y;
+        const bottom = (r.y + r.h) - c.y;
+        const minPen = Math.min(left, right, top, bottom);
+        if (minPen === left) { nx = -1; ny = 0; penetration = left + c.r; }
+        else if (minPen === right) { nx = 1; ny = 0; penetration = right + c.r; }
+        else if (minPen === top) { nx = 0; ny = -1; penetration = top + c.r; }
+        else { nx = 0; ny = 1; penetration = bottom + c.r; }
+      } else {
+        nx = dx / dist;
+        ny = dy / dist;
+        penetration = c.r - dist;
+      }
+      c.x += nx * penetration;
+      c.y += ny * penetration;
+      const vn = c.vx * nx + c.vy * ny;
+      if (vn < 0) {
+        c.vx -= 1.6 * vn * nx;
+        c.vy -= 1.6 * vn * ny;
+      }
+      return { hit: true, nx, ny, penetration };
+    }
+    return { hit: false, nx: 0, ny: 0, penetration: 0 };
+  },
+  collideCircles(c1, c2, restitution = 1.0) {
+    const dx = c1.x - c2.x;
+    const dy = c1.y - c2.y;
+    const dist = Math.hypot(dx, dy);
+    const minDist = c1.r + c2.r;
+    if (dist < minDist && dist > 0) {
+      const nx = dx / dist;
+      const ny = dy / dist;
+      const overlap = minDist - dist;
+      c1.x += nx * overlap * 0.5;
+      c1.y += ny * overlap * 0.5;
+      c2.x -= nx * overlap * 0.5;
+      c2.y -= ny * overlap * 0.5;
+      const rvx = c1.vx - c2.vx;
+      const rvy = c1.vy - c2.vy;
+      const vn = rvx * nx + rvy * ny;
+      if (vn < 0) {
+        const impulse = -(1 + restitution) * vn * 0.5;
+        c1.vx += nx * impulse;
+        c1.vy += ny * impulse;
+        c2.vx -= nx * impulse;
+        c2.vy -= ny * impulse;
+      }
+      return { hit: true, nx, ny, overlap };
+    }
+    return { hit: false, nx: 0, ny: 0, overlap: 0 };
+  },
+  getWallNormalAndDist(c, r) {
+    const closestX = Math.max(r.x, Math.min(c.x, r.x + r.w));
+    const closestY = Math.max(r.y, Math.min(c.y, r.y + r.h));
+    let dx = c.x - closestX;
+    let dy = c.y - closestY;
+    let dist = Math.hypot(dx, dy);
+    if (dist === 0) {
+      const left = c.x - r.x;
+      const right = (r.x + r.w) - c.x;
+      const top = c.y - r.y;
+      const bottom = (r.y + r.h) - c.y;
+      const minPen = Math.min(left, right, top, bottom);
+      if (minPen === left) return { nx: -1, ny: 0, dist: 0 };
+      if (minPen === right) return { nx: 1, ny: 0, dist: 0 };
+      if (minPen === top) return { nx: 0, ny: -1, dist: 0 };
+      return { nx: 0, ny: 1, dist: 0 };
+    }
+    return { nx: dx / dist, ny: dy / dist, dist };
+  },
+  applyWallPinch(ball, player, walls, playerHitBall) {
+    if (!playerHitBall) return;
+    const PINCH_DIST = ball.r + 1.8;
+    for (const w of walls) {
+      const info = this.getWallNormalAndDist(ball, w);
+      if (info.dist < PINCH_DIST) {
+        const playerPushForce = Math.hypot(player.vx, player.vy);
+        const squeezeForce = Math.max(1.8, playerPushForce * 3.1);
+        ball.vx += info.nx * squeezeForce;
+        ball.vy += info.ny * squeezeForce;
+        player.vx *= 0.55;
+        player.vy *= 0.55;
+        burst(ball.x, ball.y, '#ffffff', 5);
+        break;
+      }
+    }
+  },
+  resolveWalls(body, walls) {
+    for (const w of walls) this.clampCircleRect(body, w);
+  }
+};
+
+function initWorld() {
+  goals = [
+    { x: WALL - GOAL_DEPTH, y: GOAL_Y, w: GOAL_DEPTH, h: GOAL_H, color: '#ff4b4b' },
+    { x: W - WALL, y: GOAL_Y, w: GOAL_DEPTH, h: GOAL_H, color: '#2bff88' }
+  ];
+  posts = [
+    { x: WALL, y: GOAL_Y, r: 2.5 },
+    { x: WALL, y: GOAL_Y + GOAL_H, r: 2.5 },
+    { x: W - WALL, y: GOAL_Y, r: 2.5 },
+    { x: W - WALL, y: GOAL_Y + GOAL_H, r: 2.5 }
+  ];
+  walls = [
+    { x: 0, y: 0, w: W, h: WALL },
+    { x: 0, y: H - WALL, w: W, h: WALL },
+    { x: 0, y: 0, w: WALL, h: GOAL_Y },
+    { x: 0, y: GOAL_Y + GOAL_H, w: WALL, h: H - (GOAL_Y + GOAL_H) },
+    { x: WALL - GOAL_DEPTH, y: GOAL_Y - 2, w: 2, h: GOAL_H + 4 },
+    { x: WALL - GOAL_DEPTH, y: GOAL_Y - 2, w: GOAL_DEPTH, h: 2 },
+    { x: WALL - GOAL_DEPTH, y: GOAL_Y + GOAL_H, w: GOAL_DEPTH, h: 2 },
+    { x: W - WALL, y: 0, w: WALL, h: GOAL_Y },
+    { x: W - WALL, y: GOAL_Y + GOAL_H, w: WALL, h: H - (GOAL_Y + GOAL_H) },
+    { x: W - WALL + GOAL_DEPTH, y: GOAL_Y - 2, w: 2, h: GOAL_H + 4 },
+    { x: W - WALL, y: GOAL_Y - 2, w: GOAL_DEPTH, h: 2 },
+    { x: W - WALL, y: GOAL_Y + GOAL_H, w: GOAL_DEPTH, h: 2 }
+  ];
+}
+
+function drawAthleticPlayer(p) {
+  if (!p) return;
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  const angle = Math.atan2(p.facingY || 0, p.facingX || 1);
+  ctx.rotate(angle);
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.beginPath();
+  ctx.ellipse(0, 1, 6, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+  const legOffset = Math.sin((p.walk || 0) * 5) * 2.5;
+  ctx.fillStyle = '#111111';
+  ctx.fillRect(-3 + legOffset, -6, 3, 2);
+  ctx.fillRect(-3 - legOffset, 4, 3, 2);
+  ctx.fillStyle = '#f3b483';
+  ctx.fillRect(-2 + legOffset, -5, 2, 2);
+  ctx.fillRect(-2 - legOffset, 3, 2, 2);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(-3, -5, 4, 3);
+  ctx.fillRect(-3, 2, 4, 3);
+  ctx.fillStyle = p.color || '#e63946';
+  ctx.fillRect(-4, -4, 7, 8);
+  ctx.fillStyle = '#d62828';
+  ctx.fillRect(-4, -4, 2, 8);
+  ctx.fillStyle = '#f3b483';
+  ctx.fillRect(-legOffset * 0.6, -6, 2, 2);
+  ctx.fillRect(legOffset * 0.6, 4, 2, 2);
+  ctx.fillStyle = '#f3b483';
+  ctx.beginPath();
+  ctx.arc(0, 0, 3.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#3a2510';
+  ctx.beginPath();
+  ctx.arc(-1, 0, 3.2, Math.PI * 0.35, Math.PI * 1.65);
+  ctx.fill();
+  ctx.fillStyle = '#111';
+  ctx.fillRect(1, -1.5, 1, 1);
+  ctx.fillRect(1, 0.5, 1, 1);
+  ctx.restore();
+}
+
+function burst(x, y, color, n) {
+  for (let i = 0; i < n; i++) {
+    particles.push({
+      x, y,
+      vx: (Math.random() - 0.5) * 4,
+      vy: (Math.random() - 0.5) * 4,
+      life: 18 + Math.random() * 12,
+      c: color
+    });
+  }
+  if (particles.length > 200) particles.splice(0, particles.length - 200);
+}
+
+function drawPitch() {
+  ctx.fillStyle = '#173c19';
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#1c451e';
+  for (let x = WALL; x < W - WALL; x += 32) {
+    ctx.fillRect(x, WALL, 16, H - 2 * WALL);
+  }
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(WALL + 0.5, WALL + 0.5, W - 2 * WALL - 1, H - 2 * WALL - 1);
+  ctx.beginPath();
+  ctx.moveTo(W / 2 + 0.5, WALL);
+  ctx.lineTo(W / 2 + 0.5, H - WALL);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(W / 2 + 0.5, H / 2 + 0.5, 22, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.fillRect(W / 2 - 1, H / 2 - 1, 3, 3);
+  const penaltyH = 68, penaltyW = 32;
+  ctx.strokeRect(WALL + 0.5, H / 2 - penaltyH / 2 + 0.5, penaltyW, penaltyH);
+  ctx.strokeRect(W - WALL - penaltyW + 0.5, H / 2 - penaltyH / 2 + 0.5, penaltyW, penaltyH);
+}
+
+function drawGoals() {
+  for (const g of goals) {
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(g.x, g.y, g.w, g.h);
+    ctx.strokeStyle = 'rgba(240, 240, 240, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let x = g.x; x <= g.x + g.w; x += 4) {
+      ctx.moveTo(x + 0.5, g.y);
+      ctx.lineTo(x + 0.5, g.y + g.h);
+    }
+    for (let y = g.y; y <= g.y + g.h; y += 4) {
+      ctx.moveTo(g.x, y + 0.5);
+      ctx.lineTo(g.x + g.w, y + 0.5);
+    }
+    ctx.stroke();
+    ctx.strokeStyle = '#cccccc';
+    ctx.strokeRect(g.x + 0.5, g.y + 0.5, g.w - 1, g.h - 1);
+  }
+  ctx.fillStyle = '#ffffff';
+  for (const p of posts) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#999999';
+    ctx.fillRect(p.x - 1, p.y - 1, 2, 2);
+  }
+}
+
+function drawBall(b) {
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.beginPath();
+  ctx.ellipse(b.x, b.y + b.r + 1, b.r, 2, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(b.x | 0, b.y | 0, b.r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#111111';
+  ctx.fillRect((b.x - 1) | 0, (b.y - 1) | 0, 3, 3);
+  ctx.fillRect((b.x - 3) | 0, (b.y - 2) | 0, 2, 2);
+  ctx.fillRect((b.x + 2) | 0, (b.y + 1) | 0, 2, 2);
+}
+
+function update() {
+  if (!me || won) {
+    if (won) {
+      ball.vx *= 0.82; ball.vy *= 0.82;
+      ball.x += ball.vx; ball.y += ball.vy;
+      winTimer--;
+      if (winTimer <= 0) {
+        won = false;
+        ball = { x: 160, y: 90, vx: 0, vy: 0, r: 4.5 };
+        if (me) { me.x = me.color === '#e63946' ? 80 : 240; me.y = 90; me.vx = 0; me.vy = 0; }
+        if (opponent) { opponent.x = opponent.color === '#e63946' ? 80 : 240; opponent.y = 90; }
+      }
+    }
+    return;
+  }
+
+  const ACC = 0.38, MAX = 2.2;
+  let ix = 0, iy = 0;
+  if (keys['a'] || keys['arrowleft']) ix -= 1;
+  if (keys['d'] || keys['arrowright']) ix += 1;
+  if (keys['w'] || keys['arrowup']) iy -= 1;
+  if (keys['s'] || keys['arrowdown']) iy += 1;
+  if (ix && iy) { ix *= 0.707; iy *= 0.707; }
+
+  me.vx += ix * ACC; me.vy += iy * ACC;
+  me.vx *= 0.88; me.vy *= 0.88;
+  const sp = Math.hypot(me.vx, me.vy);
+  if (sp > MAX) { me.vx *= MAX / sp; me.vy *= MAX / sp; }
+  if (Math.abs(ix) > 0.1 || Math.abs(iy) > 0.1) {
+    me.facingX = ix;
+    me.facingY = iy;
+    me.walk += sp * 0.15;
+  }
+
+  const SUB_STEPS = 3;
+  for (let step = 0; step < SUB_STEPS; step++) {
+    me.x += me.vx / SUB_STEPS;
+    me.y += me.vy / SUB_STEPS;
+    PhysicsEngine.resolveWalls(me, walls);
+
+    ball.vx *= Math.pow(0.991, 1 / SUB_STEPS);
+    ball.vy *= Math.pow(0.991, 1 / SUB_STEPS);
+    ball.x += ball.vx / SUB_STEPS;
+    ball.y += ball.vy / SUB_STEPS;
+
+    for (const p of posts) {
+      PhysicsEngine.collideCircles(ball, p, 1.2);
+    }
+
+    const p2b = PhysicsEngine.collideCircles(me, ball, 0.85);
+    PhysicsEngine.resolveWalls(ball, walls);
+    PhysicsEngine.applyWallPinch(ball, me, walls, p2b.hit);
+
+    if (opponent) {
+      PhysicsEngine.collideCircles(me, opponent, 0.6);
+      PhysicsEngine.collideCircles(opponent, ball, 0.85);
+    }
+  }
+
+  for (const g of goals) {
+    if (ball.x > g.x && ball.x < g.x + g.w && ball.y > g.y + 2 && ball.y < g.y + g.h - 2) {
+      const ballSpeed = Math.hypot(ball.vx, ball.vy);
+      goalSpeedKph = Math.round(ballSpeed * 28);
+      won = true;
+      winTimer = 120;
+      burst(ball.x, ball.y, g.color, 35);
+      burst(ball.x, ball.y, '#ffd23f', 25);
+      burst(ball.x, ball.y, '#ffffff', 25);
+      socket.emit('goal', { speed: goalSpeedKph, color: g.color });
+    }
+  }
+
+  socket.emit('input', {
+    x: me.x, y: me.y, vx: me.vx, vy: me.vy,
+    facingX: me.facingX, facingY: me.facingY, walk: me.walk,
+    ball: { x: ball.x, y: ball.y, vx: ball.vx, vy: ball.vy }
+  });
+}
+
+function render() {
+  drawPitch();
+  drawGoals();
+  ctx.fillStyle = '#222230';
+  for (const w of walls) {
+    if (w.w >= W || w.h >= H) ctx.fillRect(w.x, w.y, w.w, w.h);
+  }
+  drawBall(ball);
+  for (const p of particles) {
+    ctx.globalAlpha = Math.min(1, p.life / 20);
+    ctx.fillStyle = p.c;
+    ctx.fillRect(p.x | 0, p.y | 0, 2, 2);
+    ctx.globalAlpha = 1.0;
+  }
+  if (opponent) drawAthleticPlayer(opponent);
+  if (me) drawAthleticPlayer(me);
+
+  if (won) {
+    ctx.fillStyle = 'rgba(0,0,0,0.75)';
+    ctx.fillRect(0, H / 2 - 30, W, 56);
+    ctx.fillStyle = '#ffd23f';
+    ctx.font = '900 18px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('GOAL!', W / 2, H / 2 - 4);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '900 11px monospace';
+    ctx.fillText(goalSpeedKph + ' KPH', W / 2, H / 2 + 16);
+    ctx.textAlign = 'left';
+  }
+}
+
+function updateParticles() {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy;
+    p.vx *= 0.93; p.vy *= 0.93;
+    p.life--;
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+}
+
+addEventListener('keydown', e => {
+  keys[e.key.toLowerCase()] = true;
+  if (['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key.toLowerCase())) e.preventDefault();
+});
+addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+const statusEl = document.getElementById('status');
+const menu = document.getElementById('menu');
+const wrap = document.getElementById('wrap');
+const hudRoom = document.getElementById('hudRoom');
+const hudPlayers = document.getElementById('hudPlayers');
+
+function setStatus(msg, type) {
+  statusEl.textContent = msg;
+  statusEl.className = type || '';
+}
+
+function startGame(code, playerId, isHost) {
+  roomCode = code;
+  myId = playerId;
+  menu.style.display = 'none';
+  wrap.style.display = 'block';
+  initWorld();
+  hudRoom.textContent = 'ROOM: ' + code;
+  hudPlayers.innerHTML = isHost
+    ? '<span class="dot p1"></span>YOU&nbsp;&nbsp;<span class="dot p2"></span>...'
+    : '<span class="dot p1"></span>P1&nbsp;&nbsp;<span class="dot p2"></span>YOU';
+}
+
+function bindSocketEvents() {
+  socket.on('state', (state) => {
+    if (state.players.length >= 2) {
+      hudPlayers.innerHTML = '<span class="dot p1"></span>P1&nbsp;&nbsp;<span class="dot p2"></span>P2 · LIVE';
+      const other = state.players.find(p => p.id !== myId);
+      if (other) opponent = { ...other, r: 5.5 };
+    }
+    if (state.ball) ball = { ...state.ball, r: 4.5 };
+  });
+
+  socket.on('opponent', (data) => {
+    if (!opponent) opponent = { r: 5.5, color: data.color || '#2bff88' };
+    opponent.x = data.x; opponent.y = data.y;
+    opponent.vx = data.vx; opponent.vy = data.vy;
+    opponent.facingX = data.facingX; opponent.facingY = data.facingY;
+    opponent.walk = data.walk;
+    if (data.ball && me) {
+      const myDist = Math.hypot(me.x - ball.x, me.y - ball.y);
+      const opDist = Math.hypot(data.x - data.ball.x, data.y - data.ball.y);
+      if (opDist < myDist + 8) {
+        ball.x = data.ball.x; ball.y = data.ball.y;
+        ball.vx = data.ball.vx; ball.vy = data.ball.vy;
+      }
+    }
+  });
+
+  socket.on('goal', (data) => {
+    if (!won) {
+      goalSpeedKph = data.speed || 0;
+      won = true;
+      winTimer = 120;
+      burst(ball.x, ball.y, data.color || '#ffd23f', 30);
+    }
+  });
+
+  socket.on('playerLeft', () => {
+    opponent = null;
+    hudPlayers.innerHTML = '<span class="dot p1"></span>YOU&nbsp;&nbsp;<span class="dot p2"></span>LEFT';
+  });
+}
+
+document.getElementById('createBtn').onclick = () => {
+  const name = document.getElementById('nameInput').value.trim() || 'PLAYER';
+  setStatus('CONNECTING...', '');
+  socket = io();
+  socket.on('connect', () => {
+    socket.emit('createRoom', name, (res) => {
+      if (!res.ok) {
+        setStatus(res.error || 'ERROR', 'error');
+        return;
+      }
+      me = {
+        x: 80, y: 90, r: 5.5, vx: 0, vy: 0,
+        facingX: 1, facingY: 0, walk: 0,
+        color: '#e63946', name
+      };
+      setStatus('', '');
+      startGame(res.code, res.playerId, true);
+      bindSocketEvents();
+    });
+  });
+  socket.on('connect_error', () => setStatus('CONNECTION FAILED', 'error'));
+};
+
+document.getElementById('joinBtn').onclick = () => {
+  const name = document.getElementById('nameInput').value.trim() || 'PLAYER';
+  const code = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (!code) {
+    setStatus('ENTER ROOM CODE', 'error');
+    return;
+  }
+  setStatus('JOINING...', '');
+  socket = io();
+  socket.on('connect', () => {
+    socket.emit('joinRoom', code, name, (res) => {
+      if (!res.ok) {
+        setStatus(res.error || 'ERROR', 'error');
+        return;
+      }
+      me = {
+        x: 240, y: 90, r: 5.5, vx: 0, vy: 0,
+        facingX: -1, facingY: 0, walk: 0,
+        color: '#2bff88', name
+      };
+      setStatus('', '');
+      startGame(res.code, res.playerId, false);
+      bindSocketEvents();
+    });
+  });
+  socket.on('connect_error', () => setStatus('CONNECTION FAILED', 'error'));
+};
+
+document.getElementById('codeInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('joinBtn').click();
+});
+document.getElementById('nameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('createBtn').click();
+});
+
+initWorld();
+let acc = 0, last = performance.now();
+function loop(now) {
+  let dt = (now - last) / 1000; last = now;
+  if (dt > 0.05) dt = 0.05;
+  acc += dt;
+  while (acc > 1 / 60) {
+    update();
+    updateParticles();
+    acc -= 1 / 60;
+  }
+  if (wrap.style.display === 'block') render();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
