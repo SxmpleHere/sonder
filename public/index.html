@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pixel Physics Football — Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
 body{
   background:#09090e;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex;align-items:center;justify-content:center;
   overflow:hidden;
-  font-family:monospace;
+  font-family:'Press Start 2P', monospace;
   color:#fff;
+  image-rendering:pixelated;
 }
 #wrap{
   position:relative;
@@ -24,84 +24,165 @@ body{
   box-shadow:0 0 0 4px #08080c,0 0 50px rgba(0,0,0,.9);
   background:#153317;
   border-radius:8px;
-  overflow:hidden
+  overflow:hidden;
 }
 canvas{
-  width:100%;
-  height:100%;
-  display:block;
+  width:100%;height:100%;display:block;
   image-rendering:pixelated;
-  image-rendering:crisp-edges
+  image-rendering:crisp-edges;
 }
+
+/* ===========================
+   PIXEL UI
+=========================== */
+
 #menu{
   position:absolute;inset:0;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  background:rgba(5,5,10,.92);
-  gap:14px;
+  background:rgba(5,5,10,.94);
+  gap:16px;
   padding:20px;
   text-align:center;
 }
+
 #menu h1{
-  font-size:22px;
-  letter-spacing:1px;
+  font-size:18px;
+  letter-spacing:2px;
   color:#ffd23f;
-  text-shadow:2px 2px 0 #000;
+  text-shadow:3px 3px 0 #000, -1px -1px 0 #7a5500;
+  margin-bottom:4px;
+  animation:twinkle 2s infinite;
 }
-#menu p{font-size:11px;opacity:.8;max-width:420px;line-height:1.5}
-#menu input{
+@keyframes twinkle{
+  0%,100%{ color:#ffd23f; }
+  50%{ color:#fff8b0; }
+}
+
+#menu .sub{
+  font-size:7px;
+  opacity:.75;
+  line-height:1.9;
+  max-width:520px;
+  color:#c9d8b8;
+}
+
+#menu .panel{
   background:#0d0d14;
-  border:2px solid #2a2a3a;
-  color:#fff;
-  padding:8px 12px;
-  font-family:monospace;
-  font-size:14px;
+  border:3px solid #2a2a3a;
+  box-shadow:inset 0 0 0 2px #050508;
+  padding:14px 18px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  image-rendering:pixelated;
+}
+
+#menu input{
+  background:#000;
+  border:3px solid #2a2a3a;
+  color:#2bff88;
+  padding:10px 12px;
+  font-family:'Press Start 2P', monospace;
+  font-size:12px;
   text-align:center;
-  letter-spacing:3px;
+  letter-spacing:5px;
   text-transform:uppercase;
-  border-radius:4px;
-  width:160px;
+  border-radius:0;
+  width:180px;
+  outline:none;
+  box-shadow:inset 2px 2px 0 #050508;
 }
-#menu button{
+#menu input:focus{ border-color:#2bff88; }
+
+button{
   background:#ffd23f;
-  border:none;
   color:#000;
-  padding:10px 22px;
-  font-family:monospace;
-  font-weight:bold;
-  font-size:13px;
+  border:3px solid #7a5500;
+  padding:10px 18px;
+  font-family:'Press Start 2P', monospace;
+  font-size:10px;
   letter-spacing:1px;
-  border-radius:4px;
   cursor:pointer;
-  transition:transform .1s;
+  border-radius:0;
+  box-shadow:
+    inset -3px -3px 0 #b8942a,
+    inset 3px 3px 0 #fff3b0,
+    0 4px 0 #000;
+  transition:transform .05s;
+  image-rendering:pixelated;
+  text-transform:uppercase;
 }
-#menu button:hover{transform:scale(1.05)}
-#menu button:active{transform:scale(.97)}
-#menu .secondary{
+button:hover{ background:#ffe066; }
+button:active{
+  transform:translateY(2px);
+  box-shadow:
+    inset -3px -3px 0 #b8942a,
+    inset 3px 3px 0 #fff3b0,
+    0 2px 0 #000;
+}
+button.secondary{
+  background:#2bff88;
+  border-color:#127a42;
+  box-shadow:
+    inset -3px -3px 0 #1cbb65,
+    inset 3px 3px 0 #a8ffd0,
+    0 4px 0 #000;
+}
+button.secondary:hover{ background:#57ffa1; }
+button.ghost{
   background:transparent;
-  border:2px solid #ffd23f;
-  color:#ffd23f;
+  color:#2bff88;
+  border-color:#2bff88;
+  box-shadow:none;
 }
+button.ghost:hover{ background:rgba(43,255,136,.1); }
+button.ghost:active{ transform:translateY(2px); box-shadow:none; }
+
+.row{ display:flex; gap:8px; align-items:center; }
+
 #roomCode{
-  font-size:28px;
+  font-size:18px;
   font-weight:bold;
   color:#2bff88;
-  letter-spacing:6px;
-  text-shadow:2px 2px 0 #000;
-  padding:6px 12px;
-  border:2px dashed #2bff88;
-  border-radius:6px;
+  letter-spacing:8px;
+  text-shadow:2px 2px 0 #000, -1px -1px 0 #0a5e2e;
+  padding:8px 14px;
+  background:#000;
+  border:3px solid #2bff88;
+  box-shadow:inset 2px 2px 0 #050508;
 }
-#status{font-size:11px;opacity:.7;min-height:16px}
+
+#status{
+  font-size:7px;
+  opacity:.8;
+  min-height:14px;
+  color:#ffd23f;
+}
+#status.err{ color:#ff4b4b; }
+
 #hint{
   position:absolute;
-  top:6px;left:50%;
+  top:8px;left:50%;
   transform:translateX(-50%);
-  font-size:9px;
+  font-size:6px;
   color:#fff;
-  opacity:.65;
+  opacity:.7;
   pointer-events:none;
   text-shadow:1px 1px 0 #000;
+  letter-spacing:1px;
+}
+
+#banner{
+  position:absolute;
+  bottom:8px;left:50%;
+  transform:translateX(-50%);
+  font-size:6px;
+  padding:4px 8px;
+  background:#000;
+  border:2px solid #ffd23f;
+  color:#ffd23f;
+  text-shadow:1px 1px 0 #000;
+  pointer-events:none;
+  letter-spacing:1px;
 }
 </style>
 </head>
@@ -110,20 +191,22 @@ canvas{
 <div id="wrap">
   <canvas id="game" width="320" height="180"></canvas>
   <div id="hint"></div>
+  <div id="banner" style="display:none;"></div>
 
   <div id="menu">
-    <h1>PIXEL PHYSICS FOOTBALL</h1>
-    <p>Move with WASD / Arrows. Right-click (or hold dash button) to dash toward the cursor. First to score wins the round.</p>
+    <h1>PIXEL FOOTBALL</h1>
+    <div class="sub">WASD / ARROWS = MOVE &middot; RIGHT CLICK = DASH<br>FIRST TO SCORE WINS THE ROUND</div>
 
-    <button id="createBtn">CREATE ROOM</button>
-
-    <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
-      <input id="roomInput" maxlength="6" placeholder="CODE" />
-      <button id="joinBtn" class="secondary">JOIN</button>
+    <div class="panel">
+      <button id="singleBtn" class="secondary">SINGLE PLAYER</button>
+      <button id="createBtn">CREATE ROOM</button>
+      <div class="row">
+        <input id="roomInput" maxlength="6" placeholder="CODE" />
+        <button id="joinBtn" class="ghost">JOIN</button>
+      </div>
+      <div id="roomCode" style="display:none;"></div>
+      <div id="status"></div>
     </div>
-
-    <div id="roomCode" style="display:none;"></div>
-    <div id="status"></div>
   </div>
 </div>
 
@@ -138,12 +221,14 @@ const ctx = cv.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
 const menu = document.getElementById('menu');
+const singleBtn = document.getElementById('singleBtn');
 const createBtn = document.getElementById('createBtn');
 const joinBtn = document.getElementById('joinBtn');
 const roomInput = document.getElementById('roomInput');
 const roomCodeEl = document.getElementById('roomCode');
 const statusEl = document.getElementById('status');
 const hintEl = document.getElementById('hint');
+const bannerEl = document.getElementById('banner');
 
 const W = 320, H = 180;
 const WALL = 10;
@@ -151,9 +236,19 @@ const GOAL_Y = H/2 - 24;
 const GOAL_H = 48;
 const GOAL_DEPTH = 18;
 
-const GOALS = [
-  { x:WALL-GOAL_DEPTH, y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#ff4b4b' },
-  { x:W-WALL,          y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#2bff88' }
+const WALLS = [
+  { x:0, y:0, w:W, h:WALL },
+  { x:0, y:H-WALL, w:W, h:WALL },
+  { x:0, y:0, w:WALL, h:GOAL_Y },
+  { x:0, y:GOAL_Y+GOAL_H, w:WALL, h:H-(GOAL_Y+GOAL_H) },
+  { x:WALL-GOAL_DEPTH, y:GOAL_Y-2, w:2, h:GOAL_H+4 },
+  { x:WALL-GOAL_DEPTH, y:GOAL_Y-2, w:GOAL_DEPTH, h:2 },
+  { x:WALL-GOAL_DEPTH, y:GOAL_Y+GOAL_H, w:GOAL_DEPTH, h:2 },
+  { x:W-WALL, y:0, w:WALL, h:GOAL_Y },
+  { x:W-WALL, y:GOAL_Y+GOAL_H, w:WALL, h:H-(GOAL_Y+GOAL_H) },
+  { x:W-WALL+GOAL_DEPTH, y:GOAL_Y-2, w:2, h:GOAL_H+4 },
+  { x:W-WALL, y:GOAL_Y-2, w:GOAL_DEPTH, h:2 },
+  { x:W-WALL, y:GOAL_Y+GOAL_H, w:GOAL_DEPTH, h:2 }
 ];
 
 const POSTS = [
@@ -163,24 +258,37 @@ const POSTS = [
   { x:W-WALL, y:GOAL_Y+GOAL_H, r:2.5 }
 ];
 
+const GOALS = [
+  { x:WALL-GOAL_DEPTH, y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#ff4b4b', side:'left' },
+  { x:W-WALL,          y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#2bff88', side:'right' }
+];
+
 /* =========================
-   NETWORK STATE
+   STATE
 ========================= */
+
+const MODE = { MENU: 0, SINGLE: 1, ONLINE: 2 };
+let mode = MODE.MENU;
 
 const socket = io();
 
 let mySide = null;
 let roomId = null;
-let latestState = null;   // from server
-let smoothedPlayers = []; // client-side interpolation
-let smoothedBall = null;
+
+// Local display state
+let dispPlayers = [];
+let dispBall = { x:W/2, y:H/2, r:4.5, vx:0, vy:0 };
+let myPlayerLocal = null;  // local prediction copy for singleplayer
+let serverWon = false;
 
 let particles = [];
 let shock = [];
 let flash = 0;
 let shake = 0;
+
+let lastGoalId = 0;        // dedupes goal explosions
 let goalInfo = null;
-let scorePulse = 0;
+let goalTimer = 0;
 
 const keys = {};
 let mouseX = W/2, mouseY = H/2;
@@ -193,44 +301,32 @@ let dashRequested = false;
 addEventListener('keydown', e=>{
   const k = e.key.toLowerCase();
   keys[k] = true;
-  if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)){
-    e.preventDefault();
-  }
+  if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault();
+  if(e.key === ' ' && (mode !== MODE.MENU)) dashRequested = true;
 });
-
-addEventListener('keyup', e=>{
-  keys[e.key.toLowerCase()] = false;
-});
-
-addEventListener('blur', ()=>{
-  for(const k in keys) keys[k] = false;
-});
+addEventListener('keyup', e=>{ keys[e.key.toLowerCase()] = false; });
+addEventListener('blur', ()=>{ for(const k in keys) keys[k] = false; });
 
 cv.addEventListener('contextmenu', e=>e.preventDefault());
-
 cv.addEventListener('mousemove', e=>{
   const r = cv.getBoundingClientRect();
   mouseX = (e.clientX - r.left)/r.width * W;
   mouseY = (e.clientY - r.top)/r.height * H;
 });
-
 cv.addEventListener('mousedown', e=>{
-  if(e.button === 2){
+  if(e.button === 2 && mode !== MODE.MENU){
     e.preventDefault();
     dashRequested = true;
   }
 });
 
-// Also allow space to dash toward mouse (keyboard-friendly)
-addEventListener('keydown', e=>{
-  if(e.key === ' ' && mySide){
-    dashRequested = true;
-  }
-});
-
 /* =========================
-   MENU
+   MENU HANDLERS
 ========================= */
+
+singleBtn.addEventListener('click', ()=>{
+  startSingleplayer();
+});
 
 createBtn.addEventListener('click', ()=>{
   socket.emit('createRoom');
@@ -239,9 +335,11 @@ createBtn.addEventListener('click', ()=>{
 joinBtn.addEventListener('click', ()=>{
   const code = roomInput.value.trim().toUpperCase();
   if(code.length < 4){
-    statusEl.textContent = 'Enter a valid room code';
+    statusEl.textContent = 'ENTER VALID CODE';
+    statusEl.classList.add('err');
     return;
   }
+  statusEl.classList.remove('err');
   socket.emit('joinRoom', code);
 });
 
@@ -255,52 +353,432 @@ socket.on('roomJoined', ({ roomId: id, side })=>{
 
   roomCodeEl.style.display = 'block';
   roomCodeEl.textContent = id;
-  statusEl.textContent = 'Waiting for opponent…';
+  statusEl.textContent = 'WAITING FOR PLAYER 2...';
+  statusEl.classList.remove('err');
 
   hintEl.textContent =
-    side === 'left'
-      ? 'You are RED (left). Move: WASD, Dash: right-click / space'
-      : 'You are GREEN (right). Move: WASD, Dash: right-click / space';
+    side === 'left' ? 'YOU = RED (LEFT)  ·  RMB = DASH'
+                    : 'YOU = GREEN (RIGHT)  ·  RMB = DASH';
 });
 
 socket.on('opponentJoined', ()=>{
-  statusEl.textContent = 'Opponent joined! Starting…';
-  setTimeout(()=>{ menu.style.display = 'none'; }, 500);
+  statusEl.textContent = 'STARTING...';
+  setTimeout(()=>{ menu.style.display = 'none'; mode = MODE.ONLINE; }, 400);
 });
 
 socket.on('opponentLeft', ()=>{
+  mode = MODE.MENU;
+  mySide = null;
+  roomId = null;
   menu.style.display = 'flex';
-  statusEl.textContent = 'Opponent left. Waiting for a new player…';
+  statusEl.textContent = 'OPPONENT LEFT. WAITING...';
+  statusEl.classList.add('err');
+  roomCodeEl.style.display = 'none';
+  bannerEl.style.display = 'none';
 });
 
 socket.on('errorMsg', (msg)=>{
-  statusEl.textContent = msg;
-});
-
-socket.on('state', (st)=>{
-  latestState = st;
+  statusEl.textContent = msg.toUpperCase();
+  statusEl.classList.add('err');
 });
 
 /* =========================
-   INTERPOLATION
+   SNAPSHOT HANDLING (from server)
+========================= */
+
+let targetPlayers = [];
+let targetBall = null;
+
+socket.on('state', (st)=>{
+  targetBall = st.ball;
+  targetPlayers = st.players;
+  serverWon = st.won;
+
+  // Goal detection by unique id — fires only once per goal
+  if(st.goal && st.goal.id !== lastGoalId){
+    lastGoalId = st.goal.id;
+    goalInfo = st.goal;
+    goalTimer = 120;
+    fireGoalExplosion(st.goal);
+  }
+});
+
+/* =========================
+   SINGLEPLAYER
+========================= */
+
+let sp = null;
+
+function startSingleplayer(){
+  menu.style.display = 'none';
+  mode = MODE.SINGLE;
+
+  sp = {
+    ball: { x: W/2, y: H/2, r: 4.5, vx:0, vy:0 },
+    me: makeLocalPlayer('left'),
+    bot: makeLocalPlayer('right'),
+    won: false,
+    winTimer: 0
+  };
+
+  hintEl.textContent = 'SINGLE PLAYER  ·  MOVE: WASD  ·  DASH: RMB / SPACE';
+  bannerEl.style.display = 'block';
+  bannerEl.textContent = 'SINGLE PLAYER';
+  lastGoalId = 0;
+  goalInfo = null;
+}
+
+function makeLocalPlayer(side){
+  return {
+    side,
+    x: side === 'left' ? W/2 - 40 : W/2 + 40,
+    y: H/2,
+    r: 5.5,
+    vx: 0, vy: 0,
+    facingX: side === 'left' ? 1 : -1,
+    facingY: 0,
+    walk: 0,
+    flying: false,
+    dashTimer: 0,
+    dashCooldown: 0,
+    dashX: 0, dashY: 0
+  };
+}
+
+/* =========================
+   CLIENT-SIDE PHYSICS
+   (mirrored so prediction & SP share code)
+========================= */
+
+function clampCircleRect(c, r){
+  const cx = Math.max(r.x, Math.min(c.x, r.x + r.w));
+  const cy = Math.max(r.y, Math.min(c.y, r.y + r.h));
+  let dx = c.x - cx, dy = c.y - cy;
+  let d2 = dx*dx + dy*dy;
+
+  if(d2 < c.r*c.r){
+    let dist = Math.sqrt(d2);
+    let nx, ny, pen;
+
+    if(dist === 0){
+      const l = c.x - r.x;
+      const rt = (r.x + r.w) - c.x;
+      const t = c.y - r.y;
+      const b = (r.y + r.h) - c.y;
+      const m = Math.min(l, rt, t, b);
+      if(m === l){ nx=-1; ny=0; pen=l+c.r; }
+      else if(m === rt){ nx=1; ny=0; pen=rt+c.r; }
+      else if(m === t){ nx=0; ny=-1; pen=t+c.r; }
+      else { nx=0; ny=1; pen=b+c.r; }
+    } else {
+      nx = dx/dist; ny = dy/dist; pen = c.r - dist;
+    }
+
+    c.x += nx*pen; c.y += ny*pen;
+    const vn = c.vx*nx + c.vy*ny;
+    if(vn < 0){
+      c.vx -= 1.6*vn*nx;
+      c.vy -= 1.6*vn*ny;
+    }
+  }
+}
+
+function collideCircles(c1, c2, rest = 1.0){
+  const dx = c1.x - c2.x;
+  const dy = c1.y - c2.y;
+  const dist = Math.hypot(dx, dy);
+  const min = c1.r + c2.r;
+
+  if(dist < min && dist > 0){
+    const nx = dx/dist, ny = dy/dist;
+    const ov = min - dist;
+
+    c1.x += nx*ov*.5; c1.y += ny*ov*.5;
+    c2.x -= nx*ov*.5; c2.y -= ny*ov*.5;
+
+    const vn = (c1.vx - c2.vx)*nx + (c1.vy - c2.vy)*ny;
+    if(vn < 0){
+      const im = -(1 + rest)*vn*.5;
+      c1.vx += nx*im; c1.vy += ny*im;
+      c2.vx -= nx*im; c2.vy -= ny*im;
+    }
+    return { hit:true };
+  }
+  return { hit:false };
+}
+
+function resolveWalls(body){
+  for(const w of WALLS) clampCircleRect(body, w);
+}
+
+function bounceOffPost(b, p){
+  const dx = b.x - p.x, dy = b.y - p.y;
+  const d = Math.hypot(dx, dy);
+  const m = b.r + p.r;
+  if(d < m && d > 0){
+    const nx = dx/d, ny = dy/d;
+    b.x += nx*(m - d);
+    b.y += ny*(m - d);
+    const vn = b.vx*nx + b.vy*ny;
+    if(vn < 0){
+      b.vx -= 1.7*vn*nx;
+      b.vy -= 1.7*vn*ny;
+    }
+  }
+}
+
+/* =========================
+   AI for singleplayer bot
+========================= */
+
+function updateBot(bot, ball){
+  // Simple: chase the ball, dash occasionally
+  const dx = ball.x - bot.x;
+  const dy = ball.y - bot.y;
+  const d = Math.hypot(dx, dy);
+
+  // Always try to stay between ball and own goal when defending
+  let tx = ball.x, ty = ball.y;
+
+  // Aim slightly to push ball into left goal
+  tx -= 6;
+  ty += Math.sin(performance.now()*0.002)*4;
+
+  let ix = 0, iy = 0;
+  if(Math.abs(tx - bot.x) > 3) ix = Math.sign(tx - bot.x);
+  if(Math.abs(ty - bot.y) > 3) iy = Math.sign(ty - bot.y);
+
+  return { ix, iy };
+}
+
+/* =========================
+   SINGLEPLAYER STEP
+========================================================= */
+
+function stepSingleplayer(){
+  const SS = 3;
+  const ACC = .38;
+  const MAX = 2.2;
+
+  const me = sp.me;
+
+  if(me.dashCooldown > 0) me.dashCooldown--;
+  if(me.dashTimer > 0) me.dashTimer--;
+
+  // Dash
+  if(dashRequested && me.dashCooldown <= 0 && !me.flying){
+    let dx = mouseX - me.x, dy = mouseY - me.y;
+    const d = Math.hypot(dx, dy);
+    if(d >= 2){
+      dx /= d; dy /= d;
+      me.dashX = dx; me.dashY = dy;
+      me.dashTimer = 7;
+      me.dashCooldown = 180;
+      me.facingX = dx; me.facingY = dy;
+      me.vx = dx*6.5;
+      me.vy = dy*6.5;
+      me.walk += 1;
+    }
+  }
+  dashRequested = false;
+
+  // Bot dash logic
+  const bot = sp.bot;
+  if(bot.dashCooldown > 0) bot.dashCooldown--;
+  if(bot.dashTimer > 0) bot.dashTimer--;
+
+  const bdx = sp.ball.x - bot.x;
+  const bdy = sp.ball.y - bot.y;
+  const bd = Math.hypot(bdx, bdy);
+
+  if(bot.dashCooldown <= 0 && bd < 40 && bd > 8 && Math.random() < 0.02){
+    const dx = bdx/bd, dy = bdy/bd;
+    bot.dashX = dx; bot.dashY = dy;
+    bot.dashTimer = 7;
+    bot.dashCooldown = 180;
+    bot.facingX = dx; bot.facingY = dy;
+    bot.vx = dx*6.5;
+    bot.vy = dy*6.5;
+    bot.walk += 1;
+  }
+
+  const botInput = updateBot(bot, sp.ball);
+
+  for(let s = 0; s < SS; s++){
+    // me
+    {
+      const p = me;
+      const ix = (keys['a']||keys['arrowleft']?-1:0) + (keys['d']||keys['arrowright']?1:0);
+      const iy = (keys['w']||keys['arrowup']?-1:0) + (keys['s']||keys['arrowdown']?1:0);
+
+      if(p.dashTimer <= 0){
+        p.vx += ix*ACC; p.vy += iy*ACC;
+        p.vx *= .88; p.vy *= .88;
+        const spd = Math.hypot(p.vx, p.vy);
+        if(spd > MAX){ p.vx *= MAX/spd; p.vy *= MAX/spd; }
+      } else {
+        p.vx *= .93; p.vy *= .93;
+      }
+
+      if(Math.abs(ix) > .1 || Math.abs(iy) > .1){
+        p.facingX = ix; p.facingY = iy;
+        p.walk += Math.hypot(p.vx, p.vy)*.15;
+      }
+
+      p.x += p.vx/SS; p.y += p.vy/SS;
+      resolveWalls(p);
+    }
+
+    // bot
+    {
+      const p = bot;
+      const ix = botInput.ix, iy = botInput.iy;
+
+      if(p.dashTimer <= 0){
+        p.vx += ix*ACC*.75; p.vy += iy*ACC*.75;
+        p.vx *= .88; p.vy *= .88;
+        const spd = Math.hypot(p.vx, p.vy);
+        if(spd > MAX){ p.vx *= MAX/spd; p.vy *= MAX/spd; }
+      } else {
+        p.vx *= .93; p.vy *= .93;
+      }
+
+      if(Math.abs(ix) > .1 || Math.abs(iy) > .1){
+        p.facingX = ix; p.facingY = iy;
+        p.walk += Math.hypot(p.vx, p.vy)*.15;
+      }
+
+      p.x += p.vx/SS; p.y += p.vy/SS;
+      resolveWalls(p);
+    }
+
+    // ball
+    sp.ball.vx *= Math.pow(.991, 1/SS);
+    sp.ball.vy *= Math.pow(.991, 1/SS);
+    sp.ball.x += sp.ball.vx/SS;
+    sp.ball.y += sp.ball.vy/SS;
+
+    for(const post of POSTS) bounceOffPost(sp.ball, post);
+
+    // collisions
+    for(const p of [me, bot]){
+      const hit = collideCircles(p, sp.ball, .85);
+      if(hit.hit && p.dashTimer > 0){
+        sp.ball.vx += p.dashX * 0.45;
+        sp.ball.vy += p.dashY * 0.45;
+
+        for(const w of WALLS){
+          const cx = Math.max(w.x, Math.min(sp.ball.x, w.x + w.w));
+          const cy = Math.max(w.y, Math.min(sp.ball.y, w.y + w.h));
+          const dx = sp.ball.x - cx;
+          const dy = sp.ball.y - cy;
+          const dist = Math.hypot(dx, dy);
+          if(dist < sp.ball.r + 2 && dist > 0){
+            const dashSpeed = Math.hypot(p.vx, p.vy);
+            const pinchBoost = Math.min(1.5, dashSpeed*.28);
+            sp.ball.vx += (dx/dist)*pinchBoost;
+            sp.ball.vy += (dy/dist)*pinchBoost;
+            break;
+          }
+        }
+      }
+    }
+
+    resolveWalls(sp.ball);
+  }
+
+  // goal
+  for(const g of GOALS){
+    if(
+      sp.ball.x > g.x && sp.ball.x < g.x + g.w &&
+      sp.ball.y > g.y + 2 && sp.ball.y < g.y + g.h - 2
+    ){
+      const speedKph = Math.round(Math.hypot(sp.ball.vx, sp.ball.vy)*28);
+      sp.won = true;
+      sp.winTimer = 120;
+
+      lastGoalId++;
+      goalInfo = {
+        id: lastGoalId,
+        side: g.side,
+        color: g.color,
+        speedKph,
+        cx: g.x + g.w/2,
+        cy: g.y + g.h/2
+      };
+      goalTimer = 120;
+      fireGoalExplosion(goalInfo);
+      break;
+    }
+  }
+
+  // Reset
+  if(sp.won){
+    if(--sp.winTimer <= 0){
+      sp.ball = { x: W/2, y: H/2, r:4.5, vx:0, vy:0 };
+      sp.me = makeLocalPlayer('left');
+      sp.bot = makeLocalPlayer('right');
+      sp.won = false;
+      goalInfo = null;
+    }
+  }
+
+  // Export for render
+  dispPlayers = [sp.me, sp.bot];
+  dispBall = sp.ball;
+  serverWon = sp.won;
+}
+
+/* =========================
+   GOAL EXPLOSION (fires once per goal id)
+========================= */
+
+function fireGoalExplosion(g){
+  flash = 1;
+  shake = 10;
+
+  shock.push({ x:g.cx, y:g.cy, t:0, color:g.color });
+
+  const cols = [g.color, '#ffd23f', '#fff', '#ff8a00'];
+  for(let i=0;i<90;i++){
+    const a = Math.random()*Math.PI*2;
+    const sp = 1 + Math.random()*5.5;
+    particles.push({
+      x: g.cx,
+      y: g.cy,
+      vx: Math.cos(a)*sp,
+      vy: Math.sin(a)*sp,
+      life: 25 + Math.random()*35,
+      c: cols[i%4],
+      s: 1 + ((Math.random()*3)|0)
+    });
+  }
+}
+
+/* =========================
+   INTERPOLATION (online)
 ========================= */
 
 function lerp(a, b, t){ return a + (b - a)*t; }
 
-function interpolate(){
-  if(!latestState) return;
+function interpolateOnline(){
+  if(!targetPlayers.length) return;
 
-  if(smoothedPlayers.length !== latestState.players.length){
-    smoothedPlayers = latestState.players.map(p => ({ ...p }));
-  }
-  if(!smoothedBall){
-    smoothedBall = { ...latestState.ball };
+  if(dispPlayers.length !== targetPlayers.length){
+    dispPlayers = targetPlayers.map(p => ({
+      side:p.side, x:p.x, y:p.y, r:p.r,
+      facingX:p.facingX, facingY:p.facingY,
+      walk:p.walk, flying:p.flying,
+      dashCooldown:p.dashCooldown,
+      dashTimer:0, dashX:0, dashY:0
+    }));
   }
 
-  const t = 0.35;
-  for(let i=0;i<latestState.players.length;i++){
-    const src = latestState.players[i];
-    const dst = smoothedPlayers[i];
+  const t = 0.5;  // snappier interpolation (was 0.35)
+
+  for(let i=0;i<targetPlayers.length;i++){
+    const src = targetPlayers[i];
+    const dst = dispPlayers[i];
     dst.x = lerp(dst.x, src.x, t);
     dst.y = lerp(dst.y, src.y, t);
     dst.facingX = lerp(dst.facingX, src.facingX, t);
@@ -311,56 +789,23 @@ function interpolate(){
     dst.side = src.side;
   }
 
-  smoothedBall.x = lerp(smoothedBall.x, latestState.ball.x, t);
-  smoothedBall.y = lerp(smoothedBall.y, latestState.ball.y, t);
-  smoothedBall.vx = latestState.ball.vx;
-  smoothedBall.vy = latestState.ball.vy;
-
-  // Detect new goal event
-  if(latestState.goal && latestState.goal !== goalInfo){
-    goalInfo = latestState.goal;
-    flash = 1;
-    shake = 10;
-    shock.push({ x:goalInfo.cx, y:goalInfo.cy, t:0, color:goalInfo.color });
-
-    for(let i=0;i<90;i++){
-      const a = Math.random()*Math.PI*2;
-      const sp = 1 + Math.random()*5.5;
-      particles.push({
-        x: goalInfo.cx,
-        y: goalInfo.cy,
-        vx: Math.cos(a)*sp,
-        vy: Math.sin(a)*sp,
-        life: 25 + Math.random()*35,
-        c: [goalInfo.color,'#ffd23f','#fff','#ff8a00'][i%4],
-        s: 1 + ((Math.random()*3)|0)
-      });
-    }
-  }
-
-  // Clear goal info when round resets
-  if(latestState.won === false && goalInfo && !latestState.goal){
-    goalInfo = null;
-  }
+  if(!dispBall) dispBall = { r:4.5, x:targetBall.x, y:targetBall.y, vx:0, vy:0 };
+  dispBall.x = lerp(dispBall.x, targetBall.x, t);
+  dispBall.y = lerp(dispBall.y, targetBall.y, t);
+  dispBall.r = 4.5;
+  dispBall.vx = targetBall.vx;
+  dispBall.vy = targetBall.vy;
 }
 
 /* =========================
-   INPUT SEND (60Hz)
+   INPUT SEND (60Hz, online)
 ========================= */
 
-function getMyInput(){
-  let ix = 0, iy = 0;
-  if(keys['a'] || keys['arrowleft']) ix -= 1;
-  if(keys['d'] || keys['arrowright']) ix += 1;
-  if(keys['w'] || keys['arrowup']) iy -= 1;
-  if(keys['s'] || keys['arrowdown']) iy += 1;
-  return { ix, iy };
-}
-
 setInterval(()=>{
-  if(!mySide) return;
+  if(mode !== MODE.ONLINE || !mySide) return;
 
-  const { ix, iy } = getMyInput();
+  const ix = (keys['a']||keys['arrowleft']?-1:0) + (keys['d']||keys['arrowright']?1:0);
+  const iy = (keys['w']||keys['arrowup']?-1:0) + (keys['s']||keys['arrowdown']?1:0);
 
   const payload = { ix, iy };
 
@@ -375,12 +820,11 @@ setInterval(()=>{
 }, 1000/60);
 
 /* =========================
-   PITCH CACHE (identical to before)
+   PITCH CACHE
 ========================= */
 
 const pitchCache = document.createElement('canvas');
-pitchCache.width = W;
-pitchCache.height = H;
+pitchCache.width = W; pitchCache.height = H;
 
 function buildPitch(){
   const c = pitchCache.getContext('2d');
@@ -438,8 +882,8 @@ function buildPitch(){
 
   c.strokeStyle = 'rgba(255,255,255,.75)';
   c.lineWidth = 1;
-
   c.strokeRect(gx+.5, gy+.5, gw-1, gh-1);
+
   c.beginPath();
   c.moveTo(W/2+.5, gy);
   c.lineTo(W/2+.5, H-WALL);
@@ -464,7 +908,6 @@ function buildPitch(){
   c.beginPath();
   c.arc(gx+23, H/2+1, 12, -Math.acos(9/12), Math.acos(9/12));
   c.stroke();
-
   c.beginPath();
   c.arc(W-WALL-23, H/2+1, 12, Math.PI-Math.acos(9/12), Math.PI+Math.acos(9/12));
   c.stroke();
@@ -484,7 +927,7 @@ function buildPitch(){
 buildPitch();
 
 /* =========================
-   DRAW HELPERS
+   DRAW
 ========================= */
 
 function drawPitch(){ ctx.drawImage(pitchCache, 0, 0); }
@@ -543,7 +986,6 @@ function drawBall(b){
 }
 
 function drawPlayer(p, isMe){
-  // Different body color per side, plus a subtle highlight if it's you
   const shirt = p.side === 'left' ? '#e63946' : '#2bff88';
   const shirtDark = p.side === 'left' ? '#d62828' : '#1fe07a';
 
@@ -595,7 +1037,6 @@ function drawPlayer(p, isMe){
 
   ctx.restore();
 
-  // "YOU" indicator
   if(isMe){
     ctx.save();
     ctx.globalAlpha = .55 + Math.sin(performance.now()*0.005)*.15;
@@ -645,26 +1086,30 @@ function drawExplosion(){
 function drawGoalText(){
   if(!goalInfo) return;
 
-  const out = Math.min(1, (120 - Math.max(0, 120 - shock[0]?.t * 3 || 1))/20);
-  // simpler: just fade using pulse
-  const alpha = Math.max(0, Math.min(1, 1 - (shock[0]?.t || 0)/45));
+  const t = 120 - goalTimer;
+  const out = Math.min(1, goalTimer/20);
+
+  const sc = t<12 ? t/12*1.4
+           : t<20 ? 1.4-(t-12)/8*.4
+           : 1 + Math.sin(t*.15)*.02;
 
   ctx.save();
-  ctx.globalAlpha = alpha;
+  ctx.globalAlpha = out;
   ctx.translate(W/2, H/2-16);
   ctx.rotate(-.06);
-  ctx.scale(1 + Math.sin(performance.now()*0.01)*.03, 1 + Math.sin(performance.now()*0.01)*.03);
+  ctx.scale(sc, sc);
 
   const col = goalInfo.color;
+  const bw = Math.min(1, t/10)*(W+40);
 
   ctx.fillStyle = col;
-  ctx.globalAlpha = alpha*.55;
-  ctx.fillRect(-W/2, -19, W, 38);
+  ctx.globalAlpha = out*.55;
+  ctx.fillRect(-bw/2, -19, bw, 38);
 
-  ctx.globalAlpha = alpha;
+  ctx.globalAlpha = out;
   ctx.fillStyle = '#fff';
-  ctx.fillRect(-W/2, -19, W, 1);
-  ctx.fillRect(-W/2, 18, W, 1);
+  ctx.fillRect(-bw/2, -19, bw, 1);
+  ctx.fillRect(-bw/2, 18, bw, 1);
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -684,12 +1129,10 @@ function drawGoalText(){
   gr.addColorStop(1,'#ffd23f');
   ctx.fillStyle = gr;
   ctx.fillText('GOAL!', 0, 0);
-
   ctx.restore();
 
-  // speed
   ctx.save();
-  ctx.globalAlpha = alpha;
+  ctx.globalAlpha = out * Math.min(1, Math.max(0, (t-10)/8));
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = '900 13px monospace';
@@ -703,18 +1146,16 @@ function drawGoalText(){
 }
 
 function drawDashUI(){
-  if(!mySide || !smoothedPlayers.length) return;
-
-  const me = smoothedPlayers.find(p => p.side === mySide);
+  let me = null;
+  if(mode === MODE.SINGLE) me = dispPlayers.find(p => p.side === 'left');
+  else if(mode === MODE.ONLINE) me = dispPlayers.find(p => p.side === mySide);
   if(!me) return;
 
   const maxCD = 180;
   const ready = me.dashCooldown <= 0;
   const p = ready ? 1 : 1 - (me.dashCooldown / maxCD);
 
-  const cx = 24;
-  const cy = H - 24;
-  const R = 9;
+  const cx = 24, cy = H - 24, R = 9;
 
   ctx.save();
 
@@ -785,8 +1226,8 @@ function render(){
   drawPitch();
   drawGoals();
 
-  if(smoothedBall && !latestState?.won){
-    drawBall(smoothedBall);
+  if(!serverWon){
+    drawBall(dispBall);
   }
 
   for(const p of particles){
@@ -799,8 +1240,11 @@ function render(){
 
   drawExplosion();
 
-  for(const p of smoothedPlayers){
-    drawPlayer(p, p.side === mySide);
+  for(const p of dispPlayers){
+    const isMe =
+      (mode === MODE.SINGLE && p.side === 'left') ||
+      (mode === MODE.ONLINE && p.side === mySide);
+    drawPlayer(p, isMe);
   }
 
   ctx.restore();
@@ -814,7 +1258,7 @@ function render(){
 
   drawDashUI();
 
-  if(latestState?.won){
+  if(serverWon){
     drawGoalText();
   }
 }
@@ -823,22 +1267,35 @@ function render(){
    LOOP
 ========================= */
 
-function loop(){
-  interpolate();
+let acc = 0;
+let last = performance.now();
 
-  flash *= .88;
-  shake *= .9;
+function loop(now){
+  let dt = (now - last)/1000;
+  last = now;
+  if(dt > .05) dt = .05;
+  acc += dt;
 
-  for(const sw of shock) sw.t++;
-  shock = shock.filter(sw => sw.t < 40);
+  while(acc > 1/60){
+    if(mode === MODE.ONLINE) interpolateOnline();
+    else if(mode === MODE.SINGLE) stepSingleplayer();
 
-  for(let i=particles.length-1; i>=0; i--){
-    const p = particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vx *= .93;
-    p.vy *= .93;
-    if(--p.life <= 0) particles.splice(i, 1);
+    // particles
+    flash *= .88;
+    shake *= .9;
+    for(const sw of shock) sw.t++;
+    shock = shock.filter(sw => sw.t < 40);
+
+    for(let i=particles.length-1; i>=0; i--){
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      p.vx *= .93; p.vy *= .93;
+      if(--p.life <= 0) particles.splice(i, 1);
+    }
+
+    if(goalTimer > 0) goalTimer--;
+
+    acc -= 1/60;
   }
 
   render();
