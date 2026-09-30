@@ -3,186 +3,345 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pixel Physics Football — Online</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<title>Sondera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
 body{
-  background:#09090e;
+  background:#05050a;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, #14142a 0%, #05050a 70%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.012) 3px 4px);
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;
-  font-family:'Press Start 2P', monospace;
-  color:#fff;
+  font-family:'Silkscreen', monospace;
+  color:#e8e8f0;
+  -webkit-font-smoothing:none;
+  font-smooth:never;
   image-rendering:pixelated;
 }
+
 #wrap{
   position:relative;
-  width:min(98vw,1000px);
+  width:min(96vw,960px);
   aspect-ratio:16/9;
-  border:4px solid #1f1f2e;
-  box-shadow:0 0 0 4px #08080c,0 0 50px rgba(0,0,0,.9);
+  border:3px solid #2a2a44;
+  box-shadow:
+    inset 0 0 0 3px #0a0a12,
+    0 0 0 3px #05050a,
+    0 12px 60px rgba(0,0,0,.9),
+    0 0 90px rgba(43,255,136,.06);
   background:#153317;
-  border-radius:8px;
   overflow:hidden;
+  image-rendering:pixelated;
 }
+
 canvas{
   width:100%;height:100%;display:block;
   image-rendering:pixelated;
   image-rendering:crisp-edges;
 }
 
-/* ===========================
+/* ================================
    PIXEL UI
-=========================== */
+   ================================ */
 
 #menu{
   position:absolute;inset:0;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  background:rgba(5,5,10,.94);
-  gap:16px;
-  padding:20px;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(20,20,42,.85) 0%, rgba(5,5,10,.98) 70%),
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.35) 2px 3px);
+  gap:14px;
+  padding:16px;
   text-align:center;
+  z-index:5;
 }
 
-#menu h1{
-  font-size:18px;
-  letter-spacing:2px;
-  color:#ffd23f;
-  text-shadow:3px 3px 0 #000, -1px -1px 0 #7a5500;
+/* Logo */
+.logo-wrap{
+  position:relative;
+  padding:0;
   margin-bottom:4px;
-  animation:twinkle 2s infinite;
 }
-@keyframes twinkle{
-  0%,100%{ color:#ffd23f; }
-  50%{ color:#fff8b0; }
+.logo{
+  font-family:'Silkscreen', monospace;
+  font-size:36px;
+  font-weight:700;
+  letter-spacing:6px;
+  color:#fff;
+  text-shadow:
+    2px 0 0 #0a0a12, -2px 0 0 #0a0a12, 0 2px 0 #0a0a12, 0 -2px 0 #0a0a12,
+    2px 2px 0 #0a0a12, -2px -2px 0 #0a0a12, 2px -2px 0 #0a0a12, -2px 2px 0 #0a0a12,
+    4px 4px 0 #2bff88,
+    5px 5px 0 #1a9e54;
 }
-
-#menu .sub{
-  font-size:7px;
-  opacity:.75;
-  line-height:1.9;
-  max-width:520px;
-  color:#c9d8b8;
-}
-
-#menu .panel{
-  background:#0d0d14;
-  border:3px solid #2a2a3a;
-  box-shadow:inset 0 0 0 2px #050508;
-  padding:14px 18px;
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  image-rendering:pixelated;
-}
-
-#menu input{
-  background:#000;
-  border:3px solid #2a2a3a;
+.logo-dot{
   color:#2bff88;
-  padding:10px 12px;
-  font-family:'Press Start 2P', monospace;
-  font-size:12px;
-  text-align:center;
-  letter-spacing:5px;
-  text-transform:uppercase;
-  border-radius:0;
-  width:180px;
-  outline:none;
-  box-shadow:inset 2px 2px 0 #050508;
+  text-shadow:
+    2px 0 0 #0a0a12, -2px 0 0 #0a0a12, 0 2px 0 #0a0a12, 0 -2px 0 #0a0a12,
+    4px 4px 0 #0a5e2e;
+  animation:pulseDot 1.4s infinite steps(2);
 }
-#menu input:focus{ border-color:#2bff88; }
+@keyframes pulseDot{
+  0%,49%{ opacity:1; }
+  50%,100%{ opacity:.45; }
+}
+.tagline{
+  font-size:8px;
+  letter-spacing:3px;
+  color:#6b7a8a;
+  margin-bottom:12px;
+}
 
-button{
-  background:#ffd23f;
-  color:#000;
-  border:3px solid #7a5500;
-  padding:10px 18px;
-  font-family:'Press Start 2P', monospace;
-  font-size:10px;
-  letter-spacing:1px;
-  cursor:pointer;
-  border-radius:0;
+/* Main panel — bordered like an old arcade screen */
+.panel{
+  position:relative;
+  background:#0a0a14;
+  border:2px solid #2a2a44;
+  padding:18px 22px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
   box-shadow:
-    inset -3px -3px 0 #b8942a,
-    inset 3px 3px 0 #fff3b0,
-    0 4px 0 #000;
-  transition:transform .05s;
-  image-rendering:pixelated;
+    inset 0 0 0 2px #05050a,
+    inset 0 0 0 4px #14142a,
+    0 6px 0 #05050a;
+  min-width:260px;
+}
+/* Corner rivets */
+.panel::before,
+.panel::after{
+  content:"";
+  position:absolute;
+  width:6px;height:6px;
+  background:#2bff88;
+  box-shadow:0 0 6px #2bff88;
+}
+.panel::before{ top:4px; left:4px; }
+.panel::after { top:4px; right:4px; }
+
+.panel .rivet-bl,
+.panel .rivet-br{
+  position:absolute;
+  width:6px;height:6px;
+  background:#2bff88;
+  box-shadow:0 0 6px #2bff88;
+}
+.panel .rivet-bl{ bottom:4px; left:4px; }
+.panel .rivet-br{ bottom:4px; right:4px; }
+
+/* Section label */
+.section-label{
+  font-size:8px;
+  color:#6b7a8a;
+  letter-spacing:2px;
+  margin-bottom:2px;
+}
+
+/* Buttons */
+button{
+  font-family:'Silkscreen', monospace;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1px;
+  color:#05050a;
+  background:#ffd23f;
+  border:none;
+  padding:11px 20px;
+  cursor:pointer;
+  position:relative;
+  box-shadow:
+    inset -3px -3px 0 #b88c00,
+    inset  3px  3px 0 #fff3a8,
+    4px 4px 0 #05050a;
+  transition:none;
   text-transform:uppercase;
+  width:100%;
 }
 button:hover{ background:#ffe066; }
 button:active{
-  transform:translateY(2px);
+  transform:translate(2px,2px);
   box-shadow:
-    inset -3px -3px 0 #b8942a,
-    inset 3px 3px 0 #fff3b0,
-    0 2px 0 #000;
+    inset -3px -3px 0 #b88c00,
+    inset  3px  3px 0 #fff3a8,
+    2px 2px 0 #05050a;
 }
-button.secondary{
+
+button.green{
   background:#2bff88;
-  border-color:#127a42;
   box-shadow:
-    inset -3px -3px 0 #1cbb65,
-    inset 3px 3px 0 #a8ffd0,
-    0 4px 0 #000;
+    inset -3px -3px 0 #0a7a3c,
+    inset  3px  3px 0 #b0ffd0,
+    4px 4px 0 #05050a;
 }
-button.secondary:hover{ background:#57ffa1; }
+button.green:hover{ background:#57ffa1; }
+button.green:active{
+  transform:translate(2px,2px);
+  box-shadow:
+    inset -3px -3px 0 #0a7a3c,
+    inset  3px  3px 0 #b0ffd0,
+    2px 2px 0 #05050a;
+}
+
 button.ghost{
-  background:transparent;
-  color:#2bff88;
-  border-color:#2bff88;
-  box-shadow:none;
+  background:#14142a;
+  color:#8a9aac;
+  box-shadow:
+    inset -3px -3px 0 #05050a,
+    inset  3px  3px 0 #22223a,
+    4px 4px 0 #05050a;
 }
-button.ghost:hover{ background:rgba(43,255,136,.1); }
-button.ghost:active{ transform:translateY(2px); box-shadow:none; }
+button.ghost:hover{ background:#1a1a32; color:#c8d8e8; }
+button.ghost:active{
+  transform:translate(2px,2px);
+  box-shadow:
+    inset -3px -3px 0 #05050a,
+    inset  3px  3px 0 #22223a,
+    2px 2px 0 #05050a;
+}
 
-.row{ display:flex; gap:8px; align-items:center; }
+button.small{ padding:9px 12px; font-size:9px; width:auto; }
 
-#roomCode{
-  font-size:18px;
-  font-weight:bold;
-  color:#2bff88;
+/* Input */
+input{
+  font-family:'Silkscreen', monospace;
+  font-size:16px;
+  font-weight:700;
   letter-spacing:8px;
-  text-shadow:2px 2px 0 #000, -1px -1px 0 #0a5e2e;
-  padding:8px 14px;
-  background:#000;
-  border:3px solid #2bff88;
-  box-shadow:inset 2px 2px 0 #050508;
+  text-align:center;
+  text-transform:uppercase;
+  color:#2bff88;
+  background:#05050a;
+  border:none;
+  padding:10px 6px 10px 14px;
+  outline:none;
+  width:150px;
+  box-shadow:
+    inset 3px 3px 0 #000,
+    inset 0 0 0 2px #2a2a44;
+  caret-color:#2bff88;
+}
+input:focus{
+  box-shadow:
+    inset 3px 3px 0 #000,
+    inset 0 0 0 2px #2bff88;
+  color:#57ffa1;
+}
+
+/* Divider */
+.divider{
+  width:100%;
+  height:2px;
+  background:
+    repeating-linear-gradient(90deg, #2a2a44 0 4px, transparent 4px 8px);
+  margin:6px 0;
+}
+
+/* Room code display */
+#roomCode{
+  display:none;
+  font-family:'Silkscreen', monospace;
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:8px;
+  color:#2bff88;
+  padding:8px 10px 8px 18px;
+  background:#05050a;
+  box-shadow:
+    inset 3px 3px 0 #000,
+    0 0 0 2px #2bff88,
+    0 0 12px rgba(43,255,136,.4);
+  text-shadow:0 0 8px #2bff88;
 }
 
 #status{
-  font-size:7px;
-  opacity:.8;
+  font-size:8px;
+  letter-spacing:1px;
   min-height:14px;
-  color:#ffd23f;
+  color:#6b7a8a;
+  text-align:center;
+  line-height:1.5;
 }
-#status.err{ color:#ff4b4b; }
+#status.err{ color:#ff5b5b; text-shadow:0 0 6px rgba(255,91,91,.5); }
+#status.ok { color:#2bff88; text-shadow:0 0 6px rgba(43,255,136,.5); }
 
+/* Hint bar */
 #hint{
   position:absolute;
   top:8px;left:50%;
   transform:translateX(-50%);
-  font-size:6px;
-  color:#fff;
-  opacity:.7;
+  font-size:8px;
+  color:#8a9aac;
+  letter-spacing:1px;
   pointer-events:none;
   text-shadow:1px 1px 0 #000;
-  letter-spacing:1px;
+  z-index:3;
+  padding:3px 8px;
+  background:rgba(0,0,0,.55);
+  border:1px solid #2a2a44;
 }
 
-#banner{
+/* Scoreboard */
+#scoreboard{
   position:absolute;
-  bottom:8px;left:50%;
+  top:8px;left:50%;
   transform:translateX(-50%);
-  font-size:6px;
-  padding:4px 8px;
-  background:#000;
-  border:2px solid #ffd23f;
-  color:#ffd23f;
-  text-shadow:1px 1px 0 #000;
-  pointer-events:none;
+  display:none;
+  gap:0;
+  align-items:stretch;
+  z-index:4;
+  font-family:'Silkscreen', monospace;
+  box-shadow:0 4px 0 rgba(0,0,0,.6);
+  image-rendering:pixelated;
+}
+#scoreboard .team{
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:700;
   letter-spacing:1px;
+  background:#0a0a14;
+  color:#8a9aac;
+  display:flex;align-items:center;gap:8px;
+  border-top:2px solid #2a2a44;
+  border-bottom:2px solid #2a2a44;
+}
+#scoreboard .team.left{
+  border-left:2px solid #2a2a44;
+  color:#ff5b5b;
+}
+#scoreboard .team.right{
+  border-right:2px solid #2a2a44;
+  color:#2bff88;
+}
+#scoreboard .team.you{
+  background:#14142a;
+}
+#scoreboard .score{
+  font-size:15px;
+  font-weight:700;
+  color:#fff;
+  min-width:14px;
+  text-align:center;
+}
+#scoreboard .vs{
+  padding:5px 8px;
+  background:#05050a;
+  color:#6b7a8a;
+  font-size:9px;
+  display:flex;align-items:center;
+  border-top:2px solid #2a2a44;
+  border-bottom:2px solid #2a2a44;
+}
+#scoreboard .mode-pill{
+  padding:5px 12px;
+  background:#0a0a14;
+  color:#ffd23f;
+  font-size:10px;
+  letter-spacing:2px;
+  border:2px solid #2a2a44;
 }
 </style>
 </head>
@@ -190,21 +349,36 @@ button.ghost:active{ transform:translateY(2px); box-shadow:none; }
 
 <div id="wrap">
   <canvas id="game" width="320" height="180"></canvas>
-  <div id="hint"></div>
-  <div id="banner" style="display:none;"></div>
+
+  <div id="hint" style="display:none;"></div>
+
+  <div id="scoreboard">
+    <!-- filled by JS -->
+  </div>
 
   <div id="menu">
-    <h1>PIXEL FOOTBALL</h1>
-    <div class="sub">WASD / ARROWS = MOVE &middot; RIGHT CLICK = DASH<br>FIRST TO SCORE WINS THE ROUND</div>
+    <div class="logo-wrap">
+      <div class="logo">Sondera<span class="logo-dot">.</span></div>
+    </div>
+    <div class="tagline">PIXEL FOOTBALL</div>
 
     <div class="panel">
-      <button id="singleBtn" class="secondary">SINGLE PLAYER</button>
+      <div class="rivet-bl"></div>
+      <div class="rivet-br"></div>
+
+      <button id="singleBtn" class="green">PLAY SOLO</button>
+
+      <div class="divider"></div>
+
+      <div class="section-label">MULTIPLAYER</div>
       <button id="createBtn">CREATE ROOM</button>
-      <div class="row">
+
+      <div style="display:flex;gap:6px;align-items:center;justify-content:center;">
         <input id="roomInput" maxlength="6" placeholder="CODE" />
-        <button id="joinBtn" class="ghost">JOIN</button>
+        <button id="joinBtn" class="ghost small">JOIN</button>
       </div>
-      <div id="roomCode" style="display:none;"></div>
+
+      <div id="roomCode"></div>
       <div id="status"></div>
     </div>
   </div>
@@ -228,7 +402,7 @@ const roomInput = document.getElementById('roomInput');
 const roomCodeEl = document.getElementById('roomCode');
 const statusEl = document.getElementById('status');
 const hintEl = document.getElementById('hint');
-const bannerEl = document.getElementById('banner');
+const scoreboardEl = document.getElementById('scoreboard');
 
 const W = 320, H = 180;
 const WALL = 10;
@@ -259,7 +433,7 @@ const POSTS = [
 ];
 
 const GOALS = [
-  { x:WALL-GOAL_DEPTH, y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#ff4b4b', side:'left' },
+  { x:WALL-GOAL_DEPTH, y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#ff5b5b', side:'left' },
   { x:W-WALL,          y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#2bff88', side:'right' }
 ];
 
@@ -275,18 +449,20 @@ const socket = io();
 let mySide = null;
 let roomId = null;
 
-// Local display state
 let dispPlayers = [];
 let dispBall = { x:W/2, y:H/2, r:4.5, vx:0, vy:0 };
-let myPlayerLocal = null;  // local prediction copy for singleplayer
 let serverWon = false;
+
+let scoreLeft = 0;
+let scoreRight = 0;
 
 let particles = [];
 let shock = [];
+let dashAfterimages = [];
 let flash = 0;
 let shake = 0;
 
-let lastGoalId = 0;        // dedupes goal explosions
+let lastGoalId = 0;
 let goalInfo = null;
 let goalTimer = 0;
 
@@ -302,7 +478,7 @@ addEventListener('keydown', e=>{
   const k = e.key.toLowerCase();
   keys[k] = true;
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault();
-  if(e.key === ' ' && (mode !== MODE.MENU)) dashRequested = true;
+  if(e.key === ' ' && mode !== MODE.MENU) dashRequested = true;
 });
 addEventListener('keyup', e=>{ keys[e.key.toLowerCase()] = false; });
 addEventListener('blur', ()=>{ for(const k in keys) keys[k] = false; });
@@ -321,6 +497,39 @@ cv.addEventListener('mousedown', e=>{
 });
 
 /* =========================
+   SCOREBOARD
+========================= */
+
+function updateScoreboard(){
+  if(mode === MODE.MENU){
+    scoreboardEl.style.display = 'none';
+    return;
+  }
+
+  scoreboardEl.style.display = 'flex';
+
+  if(mode === MODE.SINGLE){
+    scoreboardEl.innerHTML = `
+      <div class="mode-pill">SOLO</div>
+    `;
+  } else {
+    const mySideClass = mySide === 'left' ? 'you' : '';
+    const oppSideClass = mySide === 'right' ? 'you' : '';
+    scoreboardEl.innerHTML = `
+      <div class="team left ${mySideClass}">
+        <span>RED</span>
+        <span class="score">${scoreLeft}</span>
+      </div>
+      <div class="vs">VS</div>
+      <div class="team right ${oppSideClass}">
+        <span class="score">${scoreRight}</span>
+        <span>GRN</span>
+      </div>
+    `;
+  }
+}
+
+/* =========================
    MENU HANDLERS
 ========================= */
 
@@ -335,11 +544,10 @@ createBtn.addEventListener('click', ()=>{
 joinBtn.addEventListener('click', ()=>{
   const code = roomInput.value.trim().toUpperCase();
   if(code.length < 4){
-    statusEl.textContent = 'ENTER VALID CODE';
-    statusEl.classList.add('err');
+    setStatus('ENTER VALID CODE', true);
     return;
   }
-  statusEl.classList.remove('err');
+  setStatus('');
   socket.emit('joinRoom', code);
 });
 
@@ -347,23 +555,33 @@ roomInput.addEventListener('keydown', e=>{
   if(e.key === 'Enter') joinBtn.click();
 });
 
+function setStatus(msg, isErr){
+  statusEl.textContent = msg;
+  statusEl.classList.remove('err','ok');
+  if(isErr) statusEl.classList.add('err');
+  else if(msg) statusEl.classList.add('ok');
+}
+
 socket.on('roomJoined', ({ roomId: id, side })=>{
   roomId = id;
   mySide = side;
 
   roomCodeEl.style.display = 'block';
   roomCodeEl.textContent = id;
-  statusEl.textContent = 'WAITING FOR PLAYER 2...';
-  statusEl.classList.remove('err');
+  setStatus('WAITING FOR PLAYER...');
 
-  hintEl.textContent =
-    side === 'left' ? 'YOU = RED (LEFT)  ·  RMB = DASH'
-                    : 'YOU = GREEN (RIGHT)  ·  RMB = DASH';
+  updateScoreboard();
 });
 
 socket.on('opponentJoined', ()=>{
-  statusEl.textContent = 'STARTING...';
-  setTimeout(()=>{ menu.style.display = 'none'; mode = MODE.ONLINE; }, 400);
+  setStatus('STARTING...');
+  setTimeout(()=>{
+    menu.style.display = 'none';
+    hintEl.style.display = 'block';
+    hintEl.textContent = 'MOVE: WASD / ARROWS   ·   DASH: RIGHT-CLICK / SPACE';
+    mode = MODE.ONLINE;
+    updateScoreboard();
+  }, 400);
 });
 
 socket.on('opponentLeft', ()=>{
@@ -371,19 +589,18 @@ socket.on('opponentLeft', ()=>{
   mySide = null;
   roomId = null;
   menu.style.display = 'flex';
-  statusEl.textContent = 'OPPONENT LEFT. WAITING...';
-  statusEl.classList.add('err');
+  hintEl.style.display = 'none';
+  setStatus('OPPONENT LEFT', true);
   roomCodeEl.style.display = 'none';
-  bannerEl.style.display = 'none';
+  updateScoreboard();
 });
 
 socket.on('errorMsg', (msg)=>{
-  statusEl.textContent = msg.toUpperCase();
-  statusEl.classList.add('err');
+  setStatus(msg.toUpperCase(), true);
 });
 
 /* =========================
-   SNAPSHOT HANDLING (from server)
+   SNAPSHOT
 ========================= */
 
 let targetPlayers = [];
@@ -394,38 +611,44 @@ socket.on('state', (st)=>{
   targetPlayers = st.players;
   serverWon = st.won;
 
-  // Goal detection by unique id — fires only once per goal
   if(st.goal && st.goal.id !== lastGoalId){
     lastGoalId = st.goal.id;
     goalInfo = st.goal;
     goalTimer = 120;
     fireGoalExplosion(st.goal);
+
+    if(st.goal.side === 'right'){
+      // ball entered right goal → left player scored
+      scoreLeft++;
+    } else {
+      scoreRight++;
+    }
+    updateScoreboard();
   }
 });
 
 /* =========================
-   SINGLEPLAYER
+   SINGLEPLAYER (free practice, no bot)
 ========================= */
 
 let sp = null;
 
 function startSingleplayer(){
   menu.style.display = 'none';
+  hintEl.style.display = 'block';
+  hintEl.textContent = 'MOVE: WASD / ARROWS   ·   DASH: RIGHT-CLICK / SPACE';
   mode = MODE.SINGLE;
 
   sp = {
     ball: { x: W/2, y: H/2, r: 4.5, vx:0, vy:0 },
     me: makeLocalPlayer('left'),
-    bot: makeLocalPlayer('right'),
     won: false,
     winTimer: 0
   };
 
-  hintEl.textContent = 'SINGLE PLAYER  ·  MOVE: WASD  ·  DASH: RMB / SPACE';
-  bannerEl.style.display = 'block';
-  bannerEl.textContent = 'SINGLE PLAYER';
   lastGoalId = 0;
   goalInfo = null;
+  updateScoreboard();
 }
 
 function makeLocalPlayer(side){
@@ -446,8 +669,7 @@ function makeLocalPlayer(side){
 }
 
 /* =========================
-   CLIENT-SIDE PHYSICS
-   (mirrored so prediction & SP share code)
+   PHYSICS HELPERS
 ========================= */
 
 function clampCircleRect(c, r){
@@ -528,32 +750,25 @@ function bounceOffPost(b, p){
 }
 
 /* =========================
-   AI for singleplayer bot
+   DASH PARTICLES
 ========================= */
 
-function updateBot(bot, ball){
-  // Simple: chase the ball, dash occasionally
-  const dx = ball.x - bot.x;
-  const dy = ball.y - bot.y;
-  const d = Math.hypot(dx, dy);
-
-  // Always try to stay between ball and own goal when defending
-  let tx = ball.x, ty = ball.y;
-
-  // Aim slightly to push ball into left goal
-  tx -= 6;
-  ty += Math.sin(performance.now()*0.002)*4;
-
-  let ix = 0, iy = 0;
-  if(Math.abs(tx - bot.x) > 3) ix = Math.sign(tx - bot.x);
-  if(Math.abs(ty - bot.y) > 3) iy = Math.sign(ty - bot.y);
-
-  return { ix, iy };
+function burst(x, y, color, n){
+  for(let i=0;i<n;i++){
+    particles.push({
+      x, y,
+      vx:(Math.random()-.5)*4,
+      vy:(Math.random()-.5)*4,
+      life:18+Math.random()*12,
+      c:color
+    });
+  }
+  if(particles.length>220) particles.splice(0, particles.length-220);
 }
 
 /* =========================
    SINGLEPLAYER STEP
-========================================================= */
+========================= */
 
 function stepSingleplayer(){
   const SS = 3;
@@ -565,7 +780,6 @@ function stepSingleplayer(){
   if(me.dashCooldown > 0) me.dashCooldown--;
   if(me.dashTimer > 0) me.dashTimer--;
 
-  // Dash
   if(dashRequested && me.dashCooldown <= 0 && !me.flying){
     let dx = mouseX - me.x, dy = mouseY - me.y;
     const d = Math.hypot(dx, dy);
@@ -578,79 +792,45 @@ function stepSingleplayer(){
       me.vx = dx*6.5;
       me.vy = dy*6.5;
       me.walk += 1;
+
+      burst(me.x - dx*3, me.y - dy*3, '#ffffff', 9);
+      burst(me.x - dx*5, me.y - dy*5, '#ffd23f', 7);
+      shake = Math.max(shake, 1.5);
     }
   }
   dashRequested = false;
 
-  // Bot dash logic
-  const bot = sp.bot;
-  if(bot.dashCooldown > 0) bot.dashCooldown--;
-  if(bot.dashTimer > 0) bot.dashTimer--;
-
-  const bdx = sp.ball.x - bot.x;
-  const bdy = sp.ball.y - bot.y;
-  const bd = Math.hypot(bdx, bdy);
-
-  if(bot.dashCooldown <= 0 && bd < 40 && bd > 8 && Math.random() < 0.02){
-    const dx = bdx/bd, dy = bdy/bd;
-    bot.dashX = dx; bot.dashY = dy;
-    bot.dashTimer = 7;
-    bot.dashCooldown = 180;
-    bot.facingX = dx; bot.facingY = dy;
-    bot.vx = dx*6.5;
-    bot.vy = dy*6.5;
-    bot.walk += 1;
-  }
-
-  const botInput = updateBot(bot, sp.ball);
-
   for(let s = 0; s < SS; s++){
-    // me
-    {
-      const p = me;
-      const ix = (keys['a']||keys['arrowleft']?-1:0) + (keys['d']||keys['arrowright']?1:0);
-      const iy = (keys['w']||keys['arrowup']?-1:0) + (keys['s']||keys['arrowdown']?1:0);
+    const p = me;
+    const ix = (keys['a']||keys['arrowleft']?-1:0) + (keys['d']||keys['arrowright']?1:0);
+    const iy = (keys['w']||keys['arrowup']?-1:0) + (keys['s']||keys['arrowdown']?1:0);
 
-      if(p.dashTimer <= 0){
-        p.vx += ix*ACC; p.vy += iy*ACC;
-        p.vx *= .88; p.vy *= .88;
-        const spd = Math.hypot(p.vx, p.vy);
-        if(spd > MAX){ p.vx *= MAX/spd; p.vy *= MAX/spd; }
-      } else {
-        p.vx *= .93; p.vy *= .93;
-      }
-
-      if(Math.abs(ix) > .1 || Math.abs(iy) > .1){
-        p.facingX = ix; p.facingY = iy;
-        p.walk += Math.hypot(p.vx, p.vy)*.15;
-      }
-
-      p.x += p.vx/SS; p.y += p.vy/SS;
-      resolveWalls(p);
+    if(p.dashTimer <= 0){
+      p.vx += ix*ACC; p.vy += iy*ACC;
+      p.vx *= .88; p.vy *= .88;
+      const spd = Math.hypot(p.vx, p.vy);
+      if(spd > MAX){ p.vx *= MAX/spd; p.vy *= MAX/spd; }
+    } else {
+      p.vx *= .93; p.vy *= .93;
     }
 
-    // bot
-    {
-      const p = bot;
-      const ix = botInput.ix, iy = botInput.iy;
-
-      if(p.dashTimer <= 0){
-        p.vx += ix*ACC*.75; p.vy += iy*ACC*.75;
-        p.vx *= .88; p.vy *= .88;
-        const spd = Math.hypot(p.vx, p.vy);
-        if(spd > MAX){ p.vx *= MAX/spd; p.vy *= MAX/spd; }
-      } else {
-        p.vx *= .93; p.vy *= .93;
-      }
-
-      if(Math.abs(ix) > .1 || Math.abs(iy) > .1){
-        p.facingX = ix; p.facingY = iy;
-        p.walk += Math.hypot(p.vx, p.vy)*.15;
-      }
-
-      p.x += p.vx/SS; p.y += p.vy/SS;
-      resolveWalls(p);
+    if(Math.abs(ix) > .1 || Math.abs(iy) > .1){
+      p.facingX = ix; p.facingY = iy;
+      p.walk += Math.hypot(p.vx, p.vy)*.15;
     }
+
+    // dash afterimages
+    if(p.dashTimer > 0){
+      dashAfterimages.push({
+        x:p.x, y:p.y, life:8,
+        facingX:p.facingX, facingY:p.facingY,
+        side:p.side
+      });
+      if(dashAfterimages.length>14) dashAfterimages.shift();
+    }
+
+    p.x += p.vx/SS; p.y += p.vy/SS;
+    resolveWalls(p);
 
     // ball
     sp.ball.vx *= Math.pow(.991, 1/SS);
@@ -660,26 +840,24 @@ function stepSingleplayer(){
 
     for(const post of POSTS) bounceOffPost(sp.ball, post);
 
-    // collisions
-    for(const p of [me, bot]){
-      const hit = collideCircles(p, sp.ball, .85);
-      if(hit.hit && p.dashTimer > 0){
-        sp.ball.vx += p.dashX * 0.45;
-        sp.ball.vy += p.dashY * 0.45;
+    const hit = collideCircles(p, sp.ball, .85);
+    if(hit.hit && p.dashTimer > 0){
+      sp.ball.vx += p.dashX * 0.45;
+      sp.ball.vy += p.dashY * 0.45;
 
-        for(const w of WALLS){
-          const cx = Math.max(w.x, Math.min(sp.ball.x, w.x + w.w));
-          const cy = Math.max(w.y, Math.min(sp.ball.y, w.y + w.h));
-          const dx = sp.ball.x - cx;
-          const dy = sp.ball.y - cy;
-          const dist = Math.hypot(dx, dy);
-          if(dist < sp.ball.r + 2 && dist > 0){
-            const dashSpeed = Math.hypot(p.vx, p.vy);
-            const pinchBoost = Math.min(1.5, dashSpeed*.28);
-            sp.ball.vx += (dx/dist)*pinchBoost;
-            sp.ball.vy += (dy/dist)*pinchBoost;
-            break;
-          }
+      for(const w of WALLS){
+        const cx = Math.max(w.x, Math.min(sp.ball.x, w.x + w.w));
+        const cy = Math.max(w.y, Math.min(sp.ball.y, w.y + w.h));
+        const dx = sp.ball.x - cx;
+        const dy = sp.ball.y - cy;
+        const dist = Math.hypot(dx, dy);
+        if(dist < sp.ball.r + 2 && dist > 0){
+          const dashSpeed = Math.hypot(p.vx, p.vy);
+          const pinchBoost = Math.min(1.5, dashSpeed*.28);
+          sp.ball.vx += (dx/dist)*pinchBoost;
+          sp.ball.vy += (dy/dist)*pinchBoost;
+          burst(sp.ball.x, sp.ball.y, '#ffd23f', 8);
+          break;
         }
       }
     }
@@ -688,49 +866,48 @@ function stepSingleplayer(){
   }
 
   // goal
-  for(const g of GOALS){
-    if(
-      sp.ball.x > g.x && sp.ball.x < g.x + g.w &&
-      sp.ball.y > g.y + 2 && sp.ball.y < g.y + g.h - 2
-    ){
-      const speedKph = Math.round(Math.hypot(sp.ball.vx, sp.ball.vy)*28);
-      sp.won = true;
-      sp.winTimer = 120;
+  if(!sp.won){
+    for(const g of GOALS){
+      if(
+        sp.ball.x > g.x && sp.ball.x < g.x + g.w &&
+        sp.ball.y > g.y + 2 && sp.ball.y < g.y + g.h - 2
+      ){
+        const speedKph = Math.round(Math.hypot(sp.ball.vx, sp.ball.vy)*28);
+        sp.won = true;
+        sp.winTimer = 120;
 
-      lastGoalId++;
-      goalInfo = {
-        id: lastGoalId,
-        side: g.side,
-        color: g.color,
-        speedKph,
-        cx: g.x + g.w/2,
-        cy: g.y + g.h/2
-      };
-      goalTimer = 120;
-      fireGoalExplosion(goalInfo);
-      break;
+        lastGoalId++;
+        goalInfo = {
+          id: lastGoalId,
+          side: g.side,
+          color: g.color,
+          speedKph,
+          cx: g.x + g.w/2,
+          cy: g.y + g.h/2
+        };
+        goalTimer = 120;
+        fireGoalExplosion(goalInfo);
+        break;
+      }
     }
   }
 
-  // Reset
   if(sp.won){
     if(--sp.winTimer <= 0){
       sp.ball = { x: W/2, y: H/2, r:4.5, vx:0, vy:0 };
       sp.me = makeLocalPlayer('left');
-      sp.bot = makeLocalPlayer('right');
       sp.won = false;
       goalInfo = null;
     }
   }
 
-  // Export for render
-  dispPlayers = [sp.me, sp.bot];
+  dispPlayers = [sp.me];
   dispBall = sp.ball;
   serverWon = sp.won;
 }
 
 /* =========================
-   GOAL EXPLOSION (fires once per goal id)
+   GOAL EXPLOSION (fires once)
 ========================= */
 
 function fireGoalExplosion(g){
@@ -744,8 +921,7 @@ function fireGoalExplosion(g){
     const a = Math.random()*Math.PI*2;
     const sp = 1 + Math.random()*5.5;
     particles.push({
-      x: g.cx,
-      y: g.cy,
+      x: g.cx, y: g.cy,
       vx: Math.cos(a)*sp,
       vy: Math.sin(a)*sp,
       life: 25 + Math.random()*35,
@@ -774,11 +950,22 @@ function interpolateOnline(){
     }));
   }
 
-  const t = 0.5;  // snappier interpolation (was 0.35)
+  const t = 0.5;
 
   for(let i=0;i<targetPlayers.length;i++){
     const src = targetPlayers[i];
     const dst = dispPlayers[i];
+
+    // Dash trail — spawn if server says they're dashing
+    if(src.dashTimer > 0){
+      dashAfterimages.push({
+        x:dst.x, y:dst.y, life:8,
+        facingX:dst.facingX, facingY:dst.facingY,
+        side:dst.side
+      });
+      if(dashAfterimages.length>14) dashAfterimages.shift();
+    }
+
     dst.x = lerp(dst.x, src.x, t);
     dst.y = lerp(dst.y, src.y, t);
     dst.facingX = lerp(dst.facingX, src.facingX, t);
@@ -985,6 +1172,26 @@ function drawBall(b){
   ctx.fillRect((b.x+2)|0, (b.y+1)|0, 2, 2);
 }
 
+function drawAfterimages(){
+  for(const a of dashAfterimages){
+    ctx.save();
+    ctx.globalAlpha = (a.life/8) * .3;
+    ctx.translate(a.x, a.y);
+    ctx.rotate(Math.atan2(a.facingY, a.facingX));
+
+    const c = a.side === 'left' ? '#ff5b5b' : '#2bff88';
+    ctx.fillStyle = c;
+    ctx.fillRect(-5, -5, 10, 10);
+
+    ctx.globalAlpha = (a.life/8) * .5;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-3, -3, 6, 6);
+
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+}
+
 function drawPlayer(p, isMe){
   const shirt = p.side === 'left' ? '#e63946' : '#2bff88';
   const shirtDark = p.side === 'left' ? '#d62828' : '#1fe07a';
@@ -1159,12 +1366,12 @@ function drawDashUI(){
 
   ctx.save();
 
-  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillStyle = 'rgba(0,0,0,0.6)';
   ctx.beginPath();
   ctx.arc(cx, cy, R+3, 0, Math.PI*2);
   ctx.fill();
 
-  ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.arc(cx, cy, R, 0, Math.PI*2);
@@ -1239,6 +1446,7 @@ function render(){
   }
 
   drawExplosion();
+  drawAfterimages();
 
   for(const p of dispPlayers){
     const isMe =
@@ -1280,7 +1488,6 @@ function loop(now){
     if(mode === MODE.ONLINE) interpolateOnline();
     else if(mode === MODE.SINGLE) stepSingleplayer();
 
-    // particles
     flash *= .88;
     shake *= .9;
     for(const sw of shock) sw.t++;
@@ -1291,6 +1498,11 @@ function loop(now){
       p.x += p.vx; p.y += p.vy;
       p.vx *= .93; p.vy *= .93;
       if(--p.life <= 0) particles.splice(i, 1);
+    }
+
+    for(let i=dashAfterimages.length-1; i>=0; i--){
+      dashAfterimages[i].life--;
+      if(dashAfterimages[i].life <= 0) dashAfterimages.splice(i,1);
     }
 
     if(goalTimer > 0) goalTimer--;

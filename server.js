@@ -45,7 +45,7 @@ const POSTS = [
 ];
 
 const GOALS = [
-  { x:WALL-GOAL_DEPTH, y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#ff4b4b', side:'left' },
+  { x:WALL-GOAL_DEPTH, y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#ff5b5b', side:'left' },
   { x:W-WALL,          y:GOAL_Y, w:GOAL_DEPTH, h:GOAL_H, color:'#2bff88', side:'right' }
 ];
 
@@ -383,17 +383,23 @@ io.on('connection', (socket) => {
       if(!room.state) return;
       stepRoom(room);
 
-      // Map socket ids to state players in insertion order
       const ids = [...room.players.keys()];
       const snap = {
         ball: room.state.ball,
         players: room.state.players.map((p, i) => ({
           sid: ids[i],
-          x:p.x, y:p.y, r:p.r,
-          facingX:p.facingX, facingY:p.facingY,
-          walk:p.walk, flying:p.flying,
-          dashCooldown:p.dashCooldown,
-          side:p.side
+          x: p.x,
+          y: p.y,
+          r: p.r,
+          facingX: p.facingX,
+          facingY: p.facingY,
+          walk: p.walk,
+          flying: p.flying,
+          dashCooldown: p.dashCooldown,
+          dashTimer: p.dashTimer,
+          dashX: p.dashX,
+          dashY: p.dashY,
+          side: p.side
         })),
         won: room.state.won,
         goal: room.state.goal
